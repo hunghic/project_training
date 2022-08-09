@@ -1,19 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { ERROR } from 'src/share/common/error-code.const';
+import { CategoryRepository } from './category.repository';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryEntity } from './entities/category.entity';
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(private readonly categoryRepository: CategoryRepository) {}
+  async create(createCategoryDto: CreateCategoryDto) {
+    const newCategory = await this.categoryRepository.create(createCategoryDto);
+    const createCategory = await this.categoryRepository.save(newCategory);
+    if (!newCategory) {
+      throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
+    }
+    return createCategory;
   }
 
-  findAll() {
-    return `This action returns all category`;
+  findAll(): Promise<CategoryEntity> {
+    return this.categoryRepository.getAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    const categoryFound = await this.categoryRepository.findOneByCondition(id);
+    if (!categoryFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return this.categoryRepository.findOneByCondition(id);
   }
 
   update(id: number, updateCategoryDto: UpdateCategoryDto) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
@@ -14,10 +14,10 @@ export class BrandController {
 
   @Get()
   findAll() {
-    return this.brandService.getAllUser();
+    return this.brandService.getAllBrand();
   }
 
-  @Get(':id')
+  @Get('id/:id')
   findOne(@Param('id') id: string) {
     return this.brandService.findOne(+id);
   }
@@ -30,5 +30,9 @@ export class BrandController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.brandService.remove(+id);
+  }
+  @Get('search')
+  listSearch(@Query() query: any) {
+    return this.brandService.listSearch(query);
   }
 }

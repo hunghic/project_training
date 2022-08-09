@@ -34,6 +34,6 @@ export class ProductController {
   }
   @Get('search')
   listSearch(@Query() query: any) {
-    return this.productService.listSearch(query);
+    return this.productService.productSearch(query);
   }
 }

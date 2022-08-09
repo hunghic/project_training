@@ -17,19 +17,36 @@ export class BrandService {
     return createBrand;
   }
 
-  async getAllUser(): Promise<BrandEntity> {
+  async getAllBrand(): Promise<BrandEntity> {
     return this.brandRepository.getAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
+  async findOne(id: number) {
+    const productFound = await this.brandRepository.findOneByCondition(id);
+    if (!productFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return this.brandRepository.findOneByCondition(id);
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async update(id: number, updateBrandDto: UpdateBrandDto) {
+    const brandFound = await this.brandRepository.findOneByCondition(id);
+    if (!brandFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    await this.brandRepository.update(brandFound.id, updateBrandDto);
+
+    return this.brandRepository.findOneByCondition({ id: brandFound.id });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} brand`;
+    const brandFound = this.brandRepository.delete(id);
+    if (!brandFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return 'Success!';
+  }
+  async listSearch(name: string) {
+    return this.brandRepository.listSearch(name);
   }
 }

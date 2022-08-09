@@ -46,7 +46,7 @@ export class ProductService {
     }
     return 'Success!';
   }
-  async listSearch(name: string) {
-    return this.productRepository.listSearch(name);
+  async productSearch(conditions) {
+    return this.productRepository.productSearch(conditions);
   }
 }

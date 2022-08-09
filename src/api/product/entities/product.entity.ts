@@ -1,4 +1,5 @@
 import { BrandEntity } from 'src/api/brand/entities/brand.entity';
+import { CategoryEntity } from 'src/api/category/entities/category.entity';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { PRODUCT_CONST } from '../product.constant';
 
@@ -29,4 +30,9 @@ export class ProductEntity extends BaseEntity {
     eager: true,
   })
   brand: BrandEntity;
+  @ManyToOne(() => CategoryEntity, (category) => category.products, {
+    onDelete: 'SET NULL',
+    eager: true,
+  })
+  category: BrandEntity;
 }
