@@ -27,6 +27,9 @@ export class UserEntity extends BaseEntity {
 
   @Column({ length: 255, default: '' })
   daysInTrial: string;
-  @ManyToOne(() => DepartmentEntity, (department) => department.users, { onDelete: 'SET NULL' })
+  @ManyToOne(() => DepartmentEntity, (department) => department.users, {
+    onDelete: 'SET NULL',
+    eager: true,
+  })
   department: DepartmentEntity;
 }

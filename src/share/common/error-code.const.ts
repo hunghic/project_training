@@ -17,13 +17,20 @@ export const ERROR = {
     CODE: 'us00001',
     MESSAGE: 'User not found, disabled or locked',
   },
-  DEPARTMENT_NOT_FOUND: {
+  //product
+  PRODUCT_NOT_FOUND: {
     CODE: 'us00001',
     MESSAGE: 'User not found, disabled or locked',
   },
-  DEPARTMENT_OR_PASSWORD_INCORRECT: {
-    CODE: 'us00002',
-    MESSAGE: 'Username or password is incorrect',
+  PRODUCT_EXISTED: {
+    CODE: 'us00001',
+    MESSAGE: 'User not found, disabled or locked',
+  },
+
+  // department
+  DEPARTMENT_NOT_FOUND: {
+    CODE: 'us00001',
+    MESSAGE: 'User not found, disabled or locked',
   },
   DEPARTMENT_EXISTED: {
     CODE: 'us00001',
