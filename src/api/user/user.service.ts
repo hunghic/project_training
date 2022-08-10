@@ -10,12 +10,19 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async getByUserId(userId: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneByCondition({ userId });
+  async getByUserId(id: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOneByCondition({ id });
     if (!user) {
       throw new NotFoundException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
     return user;
+  }
+  async getUserByEmail(email: string): Promise<UserEntity> {
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new NotFoundException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return user[0];
   }
 
   async updateByUserId(userId: string, updateUserDto: UpdateUserDto) {

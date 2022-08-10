@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
@@ -8,4 +8,7 @@ export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
   describe: string;
+  @IsBoolean()
+  @IsNotEmpty()
+  active: boolean;
 }

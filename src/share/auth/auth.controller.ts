@@ -7,6 +7,7 @@ import {
   ApiNotFoundResponse,
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/api/user/dto/create-user.dto';
 import { AUTH_SWAGGER_RESPONSE } from './auth.constant';
 import { AuthService } from './auth.service';
 import { LoginResponseDto } from './dto/login-response.dto';
@@ -26,6 +27,16 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(loginDto);
   }
+  @Post('/register')
+  @HttpCode(HttpStatus.OK)
+  async register(
+    @Body('name') name: string,
+    @Body('email') email: string,
+    @Body('password') password: string,
+  ): Promise<LoginResponseDto> {
+    return this.authService.register();
+  }
+
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req) {}

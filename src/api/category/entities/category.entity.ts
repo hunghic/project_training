@@ -7,11 +7,14 @@ export class CategoryEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 255, default: null })
+  @Column({ length: 255, unique: true })
   name: string;
 
   @Column({ length: 255, default: null })
   describe: string;
+
+  @Column({ default: null })
+  active: boolean;
 
   @OneToMany(() => ProductEntity, (product) => product.category)
   products: ProductEntity[];

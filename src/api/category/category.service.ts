@@ -29,11 +29,22 @@ export class CategoryService {
     return this.categoryRepository.findOneByCondition(id);
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const categoryFound = await this.categoryRepository.findOneByCondition(id);
+    if (!categoryFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    await this.categoryRepository.update(categoryFound.id, updateCategoryDto);
+
+    return this.categoryRepository.findOneByCondition({ id: categoryFound.id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    const categoryFound = await this.categoryRepository.findOneByCondition(id);
+    if (!categoryFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    await this.categoryRepository.delete(id);
+    return 'Success!';
   }
 }

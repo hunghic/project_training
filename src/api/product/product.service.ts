@@ -49,4 +49,7 @@ export class ProductService {
   async productSearch(conditions) {
     return this.productRepository.productSearch(conditions);
   }
+  // async updateImageById(conditions) {
+  //   return this.productRepository.updateImageById(conditions);
+  // }
 }

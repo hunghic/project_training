@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, Req } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, Req } from '@nestjs/common';
 import { UserService } from 'src/api/user/user.service';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
@@ -8,6 +8,8 @@ import { JwtPayload } from './payloads/jwt-payload';
 import { JWT_CONFIG } from '../../configs/constant.config';
 import { ValidatorService } from './validators/check-expiration-time';
 import { ERROR } from '../common/error-code.const';
+import { CreateUserDto } from 'src/api/user/dto/create-user.dto';
+import { UserEntity } from 'src/api/user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,17 +19,12 @@ export class AuthService {
     private readonly validatorService: ValidatorService,
   ) {}
 
-  async login(loginDto: LoginDto): Promise<LoginResponseDto> {
-    const { username, password } = loginDto;
-    const user = await this.userService.getByUserId(username);
-    if (user.issuedDate && user.daysInTrial && user.daysInTrial !== '-') {
-      if (this.validatorService.checkExpirationTime(user.issuedDate, parseInt(user.daysInTrial)))
-        throw new NotFoundException(ERROR.USER_NOT_FOUND.MESSAGE);
-    }
+  async login(loginDto: LoginDto): Promise<any> {
+    const { email, password } = loginDto;
+    const user = await this.userService.getUserByEmail(email);
     const hashPassword = bcrypt.compareSync(password, user.password);
     if (!hashPassword) throw new BadRequestException(ERROR.USERNAME_OR_PASSWORD_INCORRECT.MESSAGE);
     const payload: JwtPayload = {
-      userId: username,
       email: user.email,
     };
     const jwtExpiresIn = parseInt(JWT_CONFIG.expiresIn);
@@ -36,6 +33,8 @@ export class AuthService {
       accessTokenExpire: jwtExpiresIn,
     };
   }
+  async register(): Promise<any> {}
+
   googleLogin(@Req() req) {
     if (!req.user) {
       return 'No user from google';

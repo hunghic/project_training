@@ -52,21 +52,4 @@ export class UserController {
   delete(@Param('id') id: string) {
     return this.userService.deleteUser(id);
   }
-  // @Post('upload')
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     storage: diskStorage({
-  //       destination: 'uploads/profileimages',
-  //       filename: (req, file, cb) => {
-  //         const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
-  //         const extension: string = path.parse(file.originalname).ext;
-  //         cb(null, `${filename}${extension}`);
-  //       },
-  //     }),
-  //   }),
-  // )
-  // uploadFile(@UploadedFile() file): Observable<Object> {
-  //   console.log(file);
-  //   return of({ imagePath: file.path });
-  // }
 }
