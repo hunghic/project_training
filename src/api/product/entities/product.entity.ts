@@ -31,7 +31,6 @@ export class ProductEntity extends BaseEntity {
   })
   brand: BrandEntity;
   @ManyToOne(() => CategoryEntity, (category) => category.products, {
-    onDelete: 'SET NULL',
     eager: true,
   })
   category: BrandEntity;

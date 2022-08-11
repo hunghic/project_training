@@ -2,6 +2,7 @@ import { Exclude } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { USER_CONST } from './user.constant';
 import { BaseEntity } from 'src/share/database/BaseEntity';
+import { Role } from './role.enum';
 
 @Entity({ name: USER_CONST.MODEL_NAME })
 export class UserEntity extends BaseEntity {
@@ -26,4 +27,7 @@ export class UserEntity extends BaseEntity {
 
   @Column({ length: 255 })
   expriseIn: string;
+
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  role: Role;
 }

@@ -1,6 +1,5 @@
-import { BadRequestException, Body, Injectable, Req } from '@nestjs/common';
+import { BadRequestException, Injectable, Req } from '@nestjs/common';
 import { UserService } from 'src/api/user/user.service';
-import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -10,6 +9,7 @@ import { ValidatorService } from './validators/check-expiration-time';
 import { ERROR } from '../common/error-code.const';
 import { CreateUserDto } from 'src/api/user/dto/create-user.dto';
 import { UserEntity } from 'src/api/user/user.entity';
+// import { from, map, switchMap } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +33,16 @@ export class AuthService {
       accessTokenExpire: jwtExpiresIn,
     };
   }
-  async register(): Promise<any> {}
+  async getOneUser(id: string) {
+    const userFound = await this.userService.getOneUser(id);
+    if (!userFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return this.userService.getOneUser(id);
+  }
+  async register(user: CreateUserDto): Promise<UserEntity> {
+    return this.userService.createUser(user);
+  }
 
   googleLogin(@Req() req) {
     if (!req.user) {

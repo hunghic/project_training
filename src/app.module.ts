@@ -10,6 +10,7 @@ import { BrandModule } from './api/brand/brand.module';
 import { OrderModule } from './api/order/order.module';
 import { FeedbackModule } from './api/feedback/feedback.module';
 import { VoucherModule } from './api/voucher/voucher.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { VoucherModule } from './api/voucher/voucher.module';
     OrderModule,
     FeedbackModule,
     VoucherModule,
+    CartModule,
   ],
 })
 export class AppModule {

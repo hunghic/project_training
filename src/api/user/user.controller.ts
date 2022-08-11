@@ -13,16 +13,10 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { SWAGGER_RESPONSE } from '../entity/entity.constant';
-// import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
-// import { diskStorage } from 'multer';
-// import path, { extname } from 'path';
-// import { v4 as uuidv4 } from 'uuid';
-// import { Observable, of } from 'rxjs';
-// import { fileURLToPath } from 'url';
 @ApiTags('User')
 @Controller('user')
 export class UserController {

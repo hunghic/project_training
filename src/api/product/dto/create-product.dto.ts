@@ -22,7 +22,6 @@ export class CreateProductDto {
   discount: number;
 
   @IsString()
-  @IsNotEmpty()
   image: string;
 
   //   @IsString()
