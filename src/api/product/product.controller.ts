@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -17,8 +18,14 @@ import { ProductEntity } from './entities/product.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { Roles } from 'src/share/auth/decorator/role.decorator';
+import { Role } from '../user/role.enum';
+import { JwtAuthGuard } from 'src/share/auth/guards/jwt.guard';
+import { RoleGuard } from 'src/share/auth/guards/role.guard';
 
 @Controller('product')
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 

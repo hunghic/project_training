@@ -26,6 +26,8 @@ export class AuthService {
     if (!hashPassword) throw new BadRequestException(ERROR.USERNAME_OR_PASSWORD_INCORRECT.MESSAGE);
     const payload: JwtPayload = {
       email: user.email,
+      role: user.role,
+      name: user.name,
     };
     const jwtExpiresIn = parseInt(JWT_CONFIG.expiresIn);
     return {

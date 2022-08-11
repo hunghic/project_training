@@ -34,7 +34,7 @@ export class TypeOrmRepository<T extends BaseEntity> {
     }
   async productSearch(conditions: any): Promise<T[]> {
     return this.repository.find({where: {
-      name: Like(`%${conditions.name}%`), 
+      name: Like(`%${conditions.name}%`),
       brand: Like(`%${conditions.brand}%`),
       category: Like(`%${conditions.category}%`)
     }}); 

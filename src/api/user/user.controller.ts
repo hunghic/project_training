@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
   // Res,
   // UploadedFile,
@@ -38,7 +38,7 @@ export class UserController {
   create(@Body() dto: CreateUserDto): Promise<UserEntity> {
     return this.userService.createUser(dto);
   }
-  @Put(':id')
+  @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UserEntity> {
     return this.userService.updateByUserId(id, updateUserDto);
   }

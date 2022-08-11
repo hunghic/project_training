@@ -9,6 +9,7 @@ import { ValidatorService } from './validators/check-expiration-time';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { UserModule } from 'src/api/user/user.module';
 import { JwtAuthGuard } from './guards/jwt.guard';
+import { RoleGuard } from './guards/role.guard';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { JwtAuthGuard } from './guards/jwt.guard';
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, ValidatorService, GoogleStrategy, JwtAuthGuard],
+  providers: [AuthService, JwtStrategy, ValidatorService, GoogleStrategy, JwtAuthGuard, RoleGuard],
   exports: [AuthService],
 })
 export class AuthModule {}

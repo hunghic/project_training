@@ -22,12 +22,12 @@ export class UserEntity extends BaseEntity {
   @Column({ default: false })
   isVerified: boolean;
 
-  @Column({ length: 255 })
+  @Column({ length: 255, default: null })
   code: string;
 
-  @Column({ length: 255 })
+  @Column({ length: 255, default: null })
   expriseIn: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  @Column({ type: 'enum', enum: Role, default: Role.ADMIN })
   role: Role;
 }
