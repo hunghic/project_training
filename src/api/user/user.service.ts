@@ -38,12 +38,11 @@ export class UserService {
   async createUser(data: CreateUserDto): Promise<UserEntity> {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(data.password, salt);
-    const newUser = this.userRepository.create({ ...data, password: hashPassword });
-    const createUser = await this.userRepository.save(newUser);
+    const newUser = this.userRepository.save({ ...data, password: hashPassword });
     if (!newUser) {
       throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
     }
-    return createUser;
+    return newUser;
   }
 
   async getAllUser(): Promise<UserEntity> {

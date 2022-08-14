@@ -28,6 +28,6 @@ export class UserEntity extends BaseEntity {
   @Column({ length: 255, default: null })
   expriseIn: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.ADMIN })
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
   role: Role;
 }

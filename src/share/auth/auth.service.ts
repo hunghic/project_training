@@ -46,13 +46,22 @@ export class AuthService {
     return this.userService.createUser(user);
   }
 
-  googleLogin(@Req() req) {
+  async googleLogin(@Req() req): Promise<unknown> {
     if (!req.user) {
-      return 'No user from google';
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
+    const { email, lastName, firstName } = req.user;
+    const user = await this.userService.getUserByEmail(email);
+    const newUser = !user ? await this.register({ email, name: `${firstName} ${lastName}`, password: '' }) : user;
+    const payload: JwtPayload = {
+      email: newUser.email,
+      role: newUser.role,
+      name: newUser.name,
+    };
+    const jwtExpiresIn = parseInt(JWT_CONFIG.expiresIn);
     return {
-      message: 'User information from google',
-      user: req.user,
+      accessToken: await this.jwtService.signAsync(payload, { secret: JWT_CONFIG.secret, expiresIn: jwtExpiresIn }),
+      accessTokenExpire: jwtExpiresIn,
     };
   }
 }
