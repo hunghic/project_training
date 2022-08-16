@@ -29,11 +29,6 @@ import { RoleGuard } from 'src/share/auth/guards/role.guard';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
-  }
-
   @Get()
   findAll() {
     return this.productService.findAll();
@@ -58,7 +53,7 @@ export class ProductController {
     return this.productService.productSearch(query);
   }
 
-  @Post('upload')
+  @Post('create')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -72,7 +67,7 @@ export class ProductController {
       }),
     }),
   )
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return this.productService.updateImage(file);
+  async create(@UploadedFile() image: Express.Multer.File, @Body() body: CreateProductDto) {
+    return this.productService.create(body, image);
   }
 }

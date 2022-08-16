@@ -9,8 +9,8 @@ import { ProductRepository } from './product.repository';
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
 
-  async create(data: CreateProductDto): Promise<ProductEntity> {
-    const newProduct = await this.productRepository.create(data);
+  async create(data: CreateProductDto, @UploadedFile() image: Express.Multer.File): Promise<ProductEntity> {
+    const newProduct = this.productRepository.create({ image: image.path, ...data });
     const createProduct = await this.productRepository.save(newProduct);
     if (!newProduct) {
       throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
@@ -46,10 +46,7 @@ export class ProductService {
     }
     return 'Success!';
   }
-  async productSearch(conditions) {
+  async productSearch(conditions: unknown) {
     return this.productRepository.productSearch(conditions);
-  }
-  async updateImage(@UploadedFile() file: Express.Multer.File) {
-    return file;
   }
 }
