@@ -9,7 +9,9 @@ export class LoginDto {
   @IsEmail()
   @MaxLength(255)
   email: string;
-
+  @ApiProperty({
+    description: 'isVerify',
+  })
   @ApiProperty({
     description: 'password',
   })

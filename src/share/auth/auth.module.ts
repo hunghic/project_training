@@ -10,9 +10,19 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { UserModule } from 'src/api/user/user.module';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { RoleGuard } from './guards/role.guard';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.sendgrid.net',
+        auth: {
+          user: 'apikey',
+          pass: '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',
+        },
+      },
+    }),
     PassportModule,
     JwtModule.register({
       secret: JWT_CONFIG.secret,

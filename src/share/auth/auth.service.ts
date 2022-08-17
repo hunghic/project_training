@@ -9,7 +9,7 @@ import { ValidatorService } from './validators/check-expiration-time';
 import { ERROR } from '../common/error-code.const';
 import { CreateUserDto } from 'src/api/user/dto/create-user.dto';
 import { UserEntity } from 'src/api/user/user.entity';
-// import { from, map, switchMap } from 'rxjs';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +17,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly validatorService: ValidatorService,
+    private mailService: MailerService,
   ) {}
 
   async login(loginDto: LoginDto): Promise<any> {
@@ -30,10 +31,15 @@ export class AuthService {
       name: user.name,
     };
     const jwtExpiresIn = parseInt(JWT_CONFIG.expiresIn);
-    return {
-      accessToken: await this.jwtService.signAsync(payload, { secret: JWT_CONFIG.secret, expiresIn: jwtExpiresIn }),
-      accessTokenExpire: jwtExpiresIn,
-    };
+    if (user.isVerified === false) {
+      throw new BadRequestException(ERROR.USER_NOT_VERIFIED.MESSAGE);
+    }
+    if (user.isVerified === true) {
+      return {
+        accessToken: await this.jwtService.signAsync(payload, { secret: JWT_CONFIG.secret, expiresIn: jwtExpiresIn }),
+        accessTokenExpire: jwtExpiresIn,
+      };
+    }
   }
   async getOneUser(id: string) {
     const userFound = await this.userService.getOneUser(id);
@@ -46,7 +52,7 @@ export class AuthService {
     return this.userService.createUser(user);
   }
 
-  async googleLogin(@Req() req): Promise<unknown> {
+  async googleLogin(@Req() req: any): Promise<unknown> {
     if (!req.user) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
@@ -63,5 +69,26 @@ export class AuthService {
       accessToken: await this.jwtService.signAsync(payload, { secret: JWT_CONFIG.secret, expiresIn: jwtExpiresIn }),
       accessTokenExpire: jwtExpiresIn,
     };
+  }
+  async verifyEmail(@Req() req: any): Promise<any> {
+    const user = await this.userService.verifyEmail(req);
+    // if (user && parseInt(user.expriseIn) > Date.now()) {
+    //   return { message: 'late' };
+    // }
+    if (user) {
+      user.isVerified = true;
+      user.expriseIn = null;
+      user.code = null;
+      await user.save();
+    }
+  }
+  async sendEmail(mail: string, code: string) {
+    const response = await this.mailService.sendMail({
+      to: mail,
+      from: 'hunghic@yopmail.com',
+      subject: 'Plain Text Email ✔',
+      html: `<a href="http://localhost:8080/api/v1/auth/verify-email?code=${code}">Verify email</a>`,
+    });
+    return response;
   }
 }

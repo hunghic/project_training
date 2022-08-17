@@ -9,4 +9,6 @@ export class UpdateUserDto {
 
   @IsString()
   password: string;
+
+  code: string;
 }

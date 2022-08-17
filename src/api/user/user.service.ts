@@ -5,10 +5,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
+import { MailerService } from '@nestjs-modules/mailer';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository, private mailService: MailerService) {}
 
   async getByUserId(id: string): Promise<UserEntity> {
     const user = await this.userRepository.findOneByCondition({ id });
@@ -38,7 +40,9 @@ export class UserService {
   async createUser(data: CreateUserDto): Promise<UserEntity> {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(data.password, salt);
-    const newUser = this.userRepository.save({ ...data, password: hashPassword });
+    const code = uuid();
+    const expriseIn = '20s';
+    const newUser = this.userRepository.save({ ...data, password: hashPassword, code: code, expriseIn: expriseIn });
     if (!newUser) {
       throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
     }
@@ -64,5 +68,8 @@ export class UserService {
   }
   async listSearch(name: string) {
     return this.userRepository.listSearch(name);
+  }
+  async verifyEmail(code: string) {
+    return this.userRepository.getUserByCode(code);
   }
 }

@@ -17,6 +17,10 @@ export const ERROR = {
     CODE: 'us00001',
     MESSAGE: 'User not found, disabled or locked',
   },
+  USER_NOT_VERIFIED: {
+    CODE: 'us00001',
+    MESSAGE: 'User not verified, please verify your email first',
+  },
   //product
   PRODUCT_NOT_FOUND: {
     CODE: 'us00001',

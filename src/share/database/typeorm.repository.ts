@@ -42,4 +42,9 @@ export class TypeOrmRepository<T extends BaseEntity> {
    async getUserByEmail(email: string): Promise<T[]>{
     return await this.repository.find({where:{email: email}});
    }
+   async getUserByCode(conditions: any): Promise<T>{
+    return this.repository.findOne({where: {
+      code: Like(`%${conditions.code}%`),
+    }});
+   }
 }
