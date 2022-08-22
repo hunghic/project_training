@@ -11,15 +11,17 @@ import { UserModule } from 'src/api/user/user.module';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { RoleGuard } from './guards/role.guard';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { OrderModule } from 'src/api/order/order.module';
 
 @Module({
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.sendgrid.net',
+        host: 'smtp.gmail.com',
+        secure: false,
         auth: {
-          user: 'apikey',
-          pass: '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',
+          user: process.env.GG_USER,
+          pass: process.env.GG_PASS,
         },
       },
     }),
@@ -31,6 +33,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       },
     }),
     UserModule,
+    OrderModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, ValidatorService, GoogleStrategy, JwtAuthGuard, RoleGuard],

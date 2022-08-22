@@ -26,6 +26,7 @@ export class AuthService {
     const hashPassword = bcrypt.compareSync(password, user.password);
     if (!hashPassword) throw new BadRequestException(ERROR.USERNAME_OR_PASSWORD_INCORRECT.MESSAGE);
     const payload: JwtPayload = {
+      id: user.id,
       email: user.email,
       role: user.role,
       name: user.name,
@@ -60,6 +61,7 @@ export class AuthService {
     const user = await this.userService.getUserByEmail(email);
     const newUser = !user ? await this.register({ email, name: `${firstName} ${lastName}`, password: '' }) : user;
     const payload: JwtPayload = {
+      id: newUser.id,
       email: newUser.email,
       role: newUser.role,
       name: newUser.name,
@@ -75,17 +77,25 @@ export class AuthService {
     // if (user && parseInt(user.expriseIn) > Date.now()) {
     //   return { message: 'late' };
     // }
-    if (user) {
+    if (!user) {
+      return { message: 'User not found' };
+    }
+    if (Number(user.expriseIn) * 1000 > Date.now()) {
       user.isVerified = true;
       user.expriseIn = null;
       user.code = null;
       await user.save();
+      return {
+        message: 'Verified successfully',
+      };
+    } else {
+      return { message: 'Verified error' };
     }
   }
   async sendEmail(mail: string, code: string) {
     const response = await this.mailService.sendMail({
       to: mail,
-      from: 'hunghic@yopmail.com',
+      from: 'hungboxi12223@gmail.com',
       subject: 'Plain Text Email ✔',
       html: `<a href="http://localhost:8080/api/v1/auth/verify-email?code=${code}">Verify email</a>`,
     });

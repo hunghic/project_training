@@ -68,6 +68,14 @@ export class AuthController {
   async getVerify(@Query() code: string) {
     return this.authService.verifyEmail(code);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  profile(@Req() request) {
+    return {
+      req: request.user.id,
+    };
+  }
 }
 // TODO
 // get user by code => data

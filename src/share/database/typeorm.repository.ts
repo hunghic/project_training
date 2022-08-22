@@ -1,4 +1,3 @@
-import { CreateUserDto } from 'src/api/user/dto/create-user.dto';
 import { BaseEntity, DeepPartial, Like, Repository } from 'typeorm';
 
 export class TypeOrmRepository<T extends BaseEntity> {
@@ -47,4 +46,7 @@ export class TypeOrmRepository<T extends BaseEntity> {
       code: Like(`%${conditions.code}%`),
     }});
    }
+   async searchOrderDetail(conditions: any): Promise<T[]> {
+    return this.repository.find({ where: { order: Like(`%${conditions.order}%`) } });
+  }
 }

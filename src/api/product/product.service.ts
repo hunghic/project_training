@@ -39,14 +39,22 @@ export class ProductService {
 
     return this.productRepository.findOneByCondition({ id: productFound.id });
   }
-  remove(id: number) {
-    const productFound = this.productRepository.delete(id);
-    if (!productFound) {
+  async remove(id: number) {
+    const categoryFound = await this.productRepository.findOneByCondition(id);
+    if (!categoryFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
+    await this.productRepository.delete(id);
     return 'Success!';
   }
   async productSearch(conditions: unknown) {
     return this.productRepository.productSearch(conditions);
+  }
+  async getPrice(id: number) {
+    const productFound = await this.productRepository.findOneByCondition(id);
+    if (!productFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return (await this.productRepository.findOneByCondition(id)).price;
   }
 }

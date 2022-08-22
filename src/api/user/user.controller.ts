@@ -7,11 +7,14 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  UseGuards,
   // Res,
   // UploadedFile,
   // UseInterceptors,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/share/auth/guards/jwt.guard';
 import { SWAGGER_RESPONSE } from '../entity/entity.constant';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -45,5 +48,13 @@ export class UserController {
   @Delete('delete/:id')
   delete(@Param('id') id: string) {
     return this.userService.deleteUser(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  profile(@Req() request) {
+    return {
+      req: request.user.id,
+    };
   }
 }

@@ -41,8 +41,13 @@ export class UserService {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(data.password, salt);
     const code = uuid();
-    const expriseIn = '20s';
-    const newUser = this.userRepository.save({ ...data, password: hashPassword, code: code, expriseIn: expriseIn });
+    const expriseIn = Date.now() + 3600; //1h'
+    const newUser = this.userRepository.save({
+      ...data,
+      password: hashPassword,
+      code: code,
+      expriseIn: String(expriseIn),
+    });
     if (!newUser) {
       throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
     }
