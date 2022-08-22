@@ -1,8 +1,9 @@
 import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ERROR } from 'src/share/common/error-code.const';
 import { OrderDetailService } from '../order-detail/order-detail.service';
+import { UpdateVoucherDto } from '../voucher/dto/update-voucher.dto';
+import { VoucherService } from '../voucher/voucher.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderEntity } from './entities/order.entity';
 import { OrderRepository } from './order.repository';
 
@@ -12,6 +13,8 @@ export class OrderService {
     private readonly orderRepository: OrderRepository,
     @Inject(forwardRef(() => OrderDetailService))
     private readonly orderDetailService: OrderDetailService,
+    @Inject(forwardRef(() => VoucherService))
+    private readonly voucherService: VoucherService,
   ) {}
   async create(data: CreateOrderDto, id: any): Promise<OrderEntity> {
     const newOrder = this.orderRepository.create({ ...data, user: id });
@@ -23,12 +26,19 @@ export class OrderService {
   }
   async acceptOrder(id: number, userId: any) {
     const order = this.findOne(id);
+    const voucherId = (await order).voucher;
+
     const userIdFromOrder = (await order).user.id;
-    if (userId === userIdFromOrder) {
+    if (userId === userIdFromOrder && (await order).isBuy === false) {
       (await order).isBuy = true;
       await (await order).save();
+      if (voucherId != null) {
+        const quantity = (await this.voucherService.getQuantity((await order).voucher)) - 1;
+        if (quantity === -1) throw new BadRequestException(ERROR.VOUCHER_EXPIRED.MESSAGE);
+        await this.voucherService.update(voucherId.id, { ...UpdateVoucherDto, quantity: quantity });
+      }
     }
-    return order;
+    return this.findOne(id);
   }
 
   findAll(): Promise<OrderEntity> {
@@ -43,13 +53,19 @@ export class OrderService {
     return this.orderRepository.findOneByCondition(id);
   }
 
-  async update(id: any, updateOrderDto: UpdateOrderDto) {
+  async update(id: any, body: any) {
     const orderFound = await this.orderRepository.findOneByCondition(id);
+
+    let pay = await this.orderDetailService.orderDetailSearchPrice({ order: id });
+    const discount = await this.voucherService.getDiscount(body.voucher);
+
+    if (body.voucher !== null) pay = pay - (pay * discount) / 100;
+
     if (!orderFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
-    const pay = await this.orderDetailService.orderDetailSearchPrice({ order: id });
-    await this.orderRepository.update(orderFound.id, { ...updateOrderDto, pay: pay });
+
+    await this.orderRepository.update(orderFound.id, { ...body, pay });
 
     return this.orderRepository.findOneByCondition({ id: orderFound.id });
   }

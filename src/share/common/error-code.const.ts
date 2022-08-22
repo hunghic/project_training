@@ -31,13 +31,17 @@ export const ERROR = {
     MESSAGE: 'User not found, disabled or locked',
   },
 
-  // department
-  DEPARTMENT_NOT_FOUND: {
+  // voucher
+  VOUCHER_NOT_FOUND: {
     CODE: 'us00001',
     MESSAGE: 'User not found, disabled or locked',
   },
-  DEPARTMENT_EXISTED: {
+  VOUCHER_EXISTED: {
     CODE: 'us00001',
     MESSAGE: 'User not found, disabled or locked',
+  },
+  VOUCHER_EXPIRED: {
+    CODE: 'us00001',
+    MESSAGE: 'Voucher expired',
   },
 };

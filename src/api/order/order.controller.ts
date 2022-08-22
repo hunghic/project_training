@@ -1,7 +1,5 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Req, Post, Query } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Req, Post } from '@nestjs/common';
 import { OrderService } from './order.service';
-// import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtAuthGuard } from 'src/share/auth/guards/jwt.guard';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { RoleGuard } from 'src/share/auth/guards/role.guard';
@@ -12,7 +10,6 @@ import { Role } from '../user/role.enum';
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
-  @Roles(Role.ADMIN)
   @Post()
   create(@Body() createOrderDto: CreateOrderDto, @Req() req: any) {
     const id = req.user.id;
@@ -35,8 +32,8 @@ export class OrderController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.orderService.update(+id, updateOrderDto);
+  update(@Param('id') id: string, @Body() body: any) {
+    return this.orderService.update(+id, body);
   }
   @Roles(Role.USER, Role.ADMIN)
   @Delete(':id')

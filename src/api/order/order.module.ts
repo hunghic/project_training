@@ -6,9 +6,15 @@ import { MulterModule } from '@nestjs/platform-express';
 import { OrderRepository } from './order.repository';
 import { orderProvider } from './order.provider';
 import { OrderDetailModule } from '../order-detail/order-detail.module';
+import { VoucherModule } from '../voucher/voucher.module';
 
 @Module({
-  imports: [DatabaseModule, MulterModule.register({ dest: './uploads' }), forwardRef(() => OrderDetailModule)],
+  imports: [
+    DatabaseModule,
+    MulterModule.register({ dest: './uploads' }),
+    forwardRef(() => OrderDetailModule),
+    forwardRef(() => VoucherModule),
+  ],
   controllers: [OrderController],
   providers: [OrderService, OrderRepository, ...orderProvider],
   exports: [OrderService, OrderRepository],

@@ -23,6 +23,8 @@ export class OrderEntity extends BaseEntity {
   @OneToMany(() => OrderDetailEntity, (orderDetails) => orderDetails.order, { cascade: true })
   orderDetails: OrderDetailEntity[];
 
-  @OneToMany(() => VoucherEntity, (voucher) => voucher.order)
-  vouchers: VoucherEntity[];
+  @ManyToOne(() => VoucherEntity, (voucher) => voucher.orders, {
+    eager: true,
+  })
+  voucher: VoucherEntity;
 }

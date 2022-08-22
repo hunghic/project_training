@@ -1,26 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { ERROR } from 'src/share/common/error-code.const';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { VoucherRepository } from './voucher.repository';
 
 @Injectable()
 export class VoucherService {
-  create(createVoucherDto: CreateVoucherDto) {
-    return 'This action adds a new voucher';
+  constructor(private readonly voucherRepository: VoucherRepository) {}
+  async create(createVoucherDto: CreateVoucherDto) {
+    const newVoucher = this.voucherRepository.create(createVoucherDto);
+    if (!newVoucher) {
+      throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
+    }
+    const createVoucher = await this.voucherRepository.save(newVoucher);
+    return createVoucher;
   }
 
   findAll() {
-    return `This action returns all voucher`;
+    return this.voucherRepository.getAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} voucher`;
+  async findOne(id: number) {
+    const categoryFound = await this.voucherRepository.findOneByCondition(id);
+    if (!categoryFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return this.voucherRepository.findOneByCondition(id);
   }
 
-  update(id: number, updateVoucherDto: UpdateVoucherDto) {
-    return `This action updates a #${id} voucher`;
+  async getDiscount(id: unknown) {
+    const discountFound = await this.voucherRepository.findOneByCondition(id);
+    if (!discountFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return (await this.voucherRepository.findOneByCondition(id)).discount;
+  }
+  async getQuantity(id: unknown) {
+    const discountFound = await this.voucherRepository.findOneByCondition(id);
+    if (!discountFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    return (await this.voucherRepository.findOneByCondition(id)).quantity;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} voucher`;
+  async update(id: number, updateVoucherDto: UpdateVoucherDto) {
+    const voucherFound = await this.voucherRepository.findOneByCondition(id);
+    if (!voucherFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    await this.voucherRepository.update(voucherFound.id, updateVoucherDto);
+
+    return this.voucherRepository.findOneByCondition(id);
+  }
+
+  async remove(id: number) {
+    const voucherFound = await this.voucherRepository.findOneByCondition(id);
+    if (!voucherFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    await this.voucherRepository.delete(id);
+    return 'Success!';
   }
 }

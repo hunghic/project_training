@@ -17,6 +17,11 @@ export class VoucherController {
     return this.voucherService.findAll();
   }
 
+  @Get('discount/:id')
+  getDiscount(@Param('id') id: string) {
+    return this.voucherService.getDiscount(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.voucherService.findOne(+id);

@@ -1,5 +1,5 @@
 import { OrderEntity } from 'src/api/order/entities/order.entity';
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { VOUCHER_CONST } from '../voucher.constant';
 
 @Entity({ name: VOUCHER_CONST.MODEL_NAME })
@@ -10,14 +10,12 @@ export class VoucherEntity extends BaseEntity {
   @Column({ length: 255, default: null })
   name: string;
 
-  @Column({ default: null })
+  @Column({ default: 0 })
   discount: number;
 
   @Column({ default: null })
   quantity: number;
 
-  @ManyToOne(() => OrderEntity, (product) => product.vouchers, {
-    eager: true,
-  })
-  order: OrderEntity;
+  @OneToMany(() => OrderEntity, (order) => order.voucher)
+  orders: OrderEntity[];
 }
