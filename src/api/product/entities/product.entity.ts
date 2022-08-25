@@ -1,6 +1,6 @@
 import { BrandEntity } from 'src/api/brand/entities/brand.entity';
 import { CategoryEntity } from 'src/api/category/entities/category.entity';
-import { FlashsaleEntity } from 'src/api/flashsale/entities/flashsale.entity';
+import { FlashsaleDetailEntity } from 'src/api/flashsale-detail/entities/flashsale-detail.entity';
 import { OrderDetailEntity } from 'src/api/order-detail/entities/order-detail.entity';
 import { OrderEntity } from 'src/api/order/entities/order.entity';
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -18,13 +18,13 @@ export class ProductEntity extends BaseEntity {
   describe: string;
 
   @Column({ default: null })
+  priceOrigin: number;
+
+  @Column({ default: null })
   price: number;
 
   @Column({ default: null })
   quantity: number;
-
-  @Column({ default: null })
-  discount: number;
 
   @Column({ length: 255, default: null })
   image: string;
@@ -38,13 +38,13 @@ export class ProductEntity extends BaseEntity {
   @ManyToOne(() => CategoryEntity, (category) => category.products, {
     eager: true,
   })
-  category: BrandEntity;
-
-  @ManyToOne(() => FlashsaleEntity, (flashsale) => flashsale.products, {
-    eager: true,
-  })
-  flashsale: FlashsaleEntity;
+  category: CategoryEntity;
 
   @OneToMany(() => OrderDetailEntity, (orderDetails) => orderDetails.product)
   orderDetails: OrderEntity[];
+
+  @ManyToOne(() => FlashsaleDetailEntity, (flashsaleDetail) => flashsaleDetail.products, {
+    eager: true,
+  })
+  flashsaleDetail: FlashsaleDetailEntity;
 }

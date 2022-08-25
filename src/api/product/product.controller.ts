@@ -23,20 +23,29 @@ import { extname } from 'path';
 // @Roles(Role.ADMIN)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-
+  // @Interval(3000)
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAllPage(@Query('perPage') perPage = 5, @Query('pageNumber') pageNumber = 1) {
+    return this.productService.findAllPage(+perPage, +pageNumber);
   }
+  // @Get()
+  // findAll() {
+  //   return this.productService.findAll();
+  // }
 
   @Get('id/:id')
   findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+    return this.productService.getDiscount(+id);
+  }
+
+  @Patch('add-flashsale/:id')
+  addFlashsale(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Promise<ProductEntity> {
+    return this.productService.addFlashsale(id, updateProductDto);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Promise<ProductEntity> {
-    return this.productService.updateByUserId(id, updateProductDto);
+    return this.productService.update(id, updateProductDto);
   }
 
   @Delete(':id')

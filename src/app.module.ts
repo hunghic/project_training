@@ -10,8 +10,8 @@ import { BrandModule } from './api/brand/brand.module';
 import { OrderModule } from './api/order/order.module';
 import { FeedbackModule } from './api/feedback/feedback.module';
 import { VoucherModule } from './api/voucher/voucher.module';
-import { FlashsaleModule } from './api/flashsale/flashsale.module';
 import { OrderDetailModule } from './api/order-detail/order-detail.module';
+import { FlashsaleDetailModule } from './api/flashsale-detail/flashsale-detail.module';
 
 @Module({
   imports: [
@@ -25,8 +25,8 @@ import { OrderDetailModule } from './api/order-detail/order-detail.module';
     OrderModule,
     FeedbackModule,
     VoucherModule,
-    FlashsaleModule,
     OrderDetailModule,
+    FlashsaleDetailModule,
   ],
 })
 export class AppModule {

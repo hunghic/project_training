@@ -26,7 +26,9 @@ export class UserService {
     }
     return user[0];
   }
-
+  async findAllPage(perPage: number, pageNumber: number) {
+    return this.userRepository.getAllPage(perPage, pageNumber);
+  }
   async updateByUserId(userId: string, updateUserDto: UpdateUserDto) {
     const userFound = await this.userRepository.findOneByCondition(userId);
     if (!userFound) {

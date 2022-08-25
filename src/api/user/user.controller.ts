@@ -25,9 +25,9 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @ApiOkResponse(SWAGGER_RESPONSE.HEALTH_CHECK)
-  @Get('')
-  getAllUser() {
-    return this.userService.getAllUser();
+  @Get()
+  findAllPage(@Query('perPage') perPage = 5, @Query('pageNumber') pageNumber = 1) {
+    return this.userService.findAllPage(+perPage, +pageNumber);
   }
   @Get('id/:id')
   getOne(@Param('id') id: string) {

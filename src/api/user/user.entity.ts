@@ -1,9 +1,10 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { USER_CONST } from './user.constant';
 import { BaseEntity } from 'src/share/database/BaseEntity';
 import { Role } from './role.enum';
 import { OrderEntity } from '../order/entities/order.entity';
+import { FlashsaleDetailEntity } from '../flashsale-detail/entities/flashsale-detail.entity';
 
 @Entity({ name: USER_CONST.MODEL_NAME })
 export class UserEntity extends BaseEntity {
@@ -34,4 +35,7 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: OrderEntity[];
+
+  @ManyToOne(() => FlashsaleDetailEntity, (flashsaleDetail) => flashsaleDetail.users)
+  flashsaleDetail: FlashsaleDetailEntity;
 }

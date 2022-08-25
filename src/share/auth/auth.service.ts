@@ -59,7 +59,9 @@ export class AuthService {
     }
     const { email, lastName, firstName } = req.user;
     const user = await this.userService.getUserByEmail(email);
-    const newUser = !user ? await this.register({ email, name: `${firstName} ${lastName}`, password: '' }) : user;
+    const newUser = !user
+      ? await this.register({ email, name: `${firstName} ${lastName}`, password: '', isVerified: true })
+      : user;
     const payload: JwtPayload = {
       id: newUser.id,
       email: newUser.email,

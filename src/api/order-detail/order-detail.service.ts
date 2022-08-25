@@ -15,6 +15,7 @@ export class OrderDetailService {
     @Inject(forwardRef(() => OrderService))
     private readonly orderService: OrderService,
   ) {}
+
   async create(createOrderDetailDto: CreateOrderDetailDto) {
     const newOrderDetail = this.orderDetailRepository.create(createOrderDetailDto);
     const priceProduct = this.productService.getPrice(newOrderDetail.product);
