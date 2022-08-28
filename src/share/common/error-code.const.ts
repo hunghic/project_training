@@ -3,7 +3,15 @@ export const ERROR = {
     CODE: 'sys00001',
     MESSAGE: 'An error has arisen from the system. Please try again later or contact us for a fix.',
   },
-
+  // for All
+  NOTFOUND: {
+    CODE: '00001',
+    MESSAGE: 'Not found, disabled or locked',
+  },
+  EXISTED: {
+    CODE: '00002',
+    MESSAGE: 'Existed',
+  },
   // user
   USER_NOT_FOUND: {
     CODE: 'us00001',
@@ -15,7 +23,7 @@ export const ERROR = {
   },
   USER_EXISTED: {
     CODE: 'us00001',
-    MESSAGE: 'User not found, disabled or locked',
+    MESSAGE: 'User existed',
   },
   USER_NOT_VERIFIED: {
     CODE: 'us00001',
@@ -28,7 +36,7 @@ export const ERROR = {
   },
   PRODUCT_EXISTED: {
     CODE: 'us00001',
-    MESSAGE: 'User not found, disabled or locked',
+    MESSAGE: 'Product existed',
   },
 
   // voucher

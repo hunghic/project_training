@@ -1,5 +1,5 @@
 import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
-import { ERROR } from 'src/share/common/error-code.const';
+import { ERROR } from '../../share/common/error-code.const';
 import { UpdateOrderDto } from '../order/dto/update-order.dto';
 import { OrderService } from '../order/order.service';
 import { ProductService } from '../product/product.service';

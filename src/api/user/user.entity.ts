@@ -1,7 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { USER_CONST } from './user.constant';
-import { BaseEntity } from 'src/share/database/BaseEntity';
+import { BaseEntity } from '../../share/database/BaseEntity';
 import { Role } from './role.enum';
 import { OrderEntity } from '../order/entities/order.entity';
 import { FlashsaleDetailEntity } from '../flashsale-detail/entities/flashsale-detail.entity';

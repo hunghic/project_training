@@ -1,6 +1,6 @@
-import { OrderEntity } from 'src/api/order/entities/order.entity';
-import { ProductEntity } from 'src/api/product/entities/product.entity';
-import { UserEntity } from 'src/api/user/user.entity';
+import { OrderEntity } from '../../../api/order/entities/order.entity';
+import { ProductEntity } from '../../../api/product/entities/product.entity';
+import { UserEntity } from '../../../api/user/user.entity';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { FLASHSALEDETAIL_CONST } from '../flashsale-detail.constant';
 

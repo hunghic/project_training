@@ -1,8 +1,8 @@
-import { BrandEntity } from 'src/api/brand/entities/brand.entity';
-import { CategoryEntity } from 'src/api/category/entities/category.entity';
-import { FlashsaleDetailEntity } from 'src/api/flashsale-detail/entities/flashsale-detail.entity';
-import { OrderDetailEntity } from 'src/api/order-detail/entities/order-detail.entity';
-import { OrderEntity } from 'src/api/order/entities/order.entity';
+import { BrandEntity } from '../../../api/brand/entities/brand.entity';
+import { CategoryEntity } from '../../../api/category/entities/category.entity';
+import { FlashsaleDetailEntity } from '../../../api/flashsale-detail/entities/flashsale-detail.entity';
+import { OrderDetailEntity } from '../../../api/order-detail/entities/order-detail.entity';
+import { OrderEntity } from '../../../api/order/entities/order.entity';
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { PRODUCT_CONST } from '../product.constant';
 

@@ -1,7 +1,7 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
-import { ERROR } from 'src/share/common/error-code.const';
+import { ERROR } from '../../share/common/error-code.const';
 import { UpdateProductDto } from '../product/dto/update-product.dto';
 import { ProductRepository } from '../product/product.repository';
 import { ProductService } from '../product/product.service';
@@ -44,7 +44,7 @@ export class FlashsaleDetailService {
     // const discount = a.map((od: any) => od.discount);
   }
   // start flashsale
-  @Interval(1)
+  @Interval(1000 * 60 * 5)
   async startFlashsale() {
     const dateNow = new Date();
     const flashsale = await this.flashsaleDetailRepository.getAll();
@@ -60,7 +60,7 @@ export class FlashsaleDetailService {
     }
   }
   // end flashsale
-  @Interval(1)
+  @Interval(1000 * 60 * 5)
   async endFlashsale() {
     const dateNow = new Date();
     const flashsale = await this.flashsaleDetailRepository.getAll();
@@ -77,7 +77,7 @@ export class FlashsaleDetailService {
     }
   }
   // send Email notification
-  @Interval(1)
+  @Interval(1000 * 60 * 5)
   async sendNotify() {
     const dateNow = new Date();
     const flashsale = await this.flashsaleDetailRepository.getAll();

@@ -1,6 +1,6 @@
 import { BadRequestException, forwardRef, Inject, Injectable, UploadedFile } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { ERROR } from 'src/share/common/error-code.const';
+import { ERROR } from '../../share/common/error-code.const';
 import { FlashsaleDetailService } from '../flashsale-detail/flashsale-detail.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -18,10 +18,10 @@ export class ProductService {
 
   async create(data: CreateProductDto, @UploadedFile() image: Express.Multer.File): Promise<ProductEntity> {
     const newProduct = this.productRepository.create({ image: image.path, ...data });
-    const createProduct = await this.productRepository.save(newProduct);
     if (!newProduct) {
       throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
     }
+    const createProduct = await this.productRepository.save(newProduct);
     return createProduct;
   }
 

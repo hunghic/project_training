@@ -1,4 +1,4 @@
-import { ProductEntity } from 'src/api/product/entities/product.entity';
+import { ProductEntity } from '../../../api/product/entities/product.entity';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CATEGORY_CONST } from '../category.constant';
 

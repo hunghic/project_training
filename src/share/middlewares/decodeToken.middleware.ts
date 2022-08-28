@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { JWT_CONFIG } from 'src/configs/constant.config';
+import { JWT_CONFIG } from '../../configs/constant.config';
 import { Response, NextFunction } from 'express';
 
 @Injectable()

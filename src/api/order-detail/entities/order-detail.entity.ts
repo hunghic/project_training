@@ -1,5 +1,5 @@
-import { OrderEntity } from 'src/api/order/entities/order.entity';
-import { ProductEntity } from 'src/api/product/entities/product.entity';
+import { OrderEntity } from '../../../api/order/entities/order.entity';
+import { ProductEntity } from '../../../api/product/entities/product.entity';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ORDERDETAIL_CONST } from '../order-detail.constant';
 

@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { VoucherService } from './voucher.service';
 import { VoucherController } from './voucher.controller';
-import { DatabaseModule } from 'src/configs/database/database.module';
+import { DatabaseModule } from '../../configs/database/database.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { VoucherRepository } from './voucher.repository';
 import { voucherProvider } from './voucher.provider';

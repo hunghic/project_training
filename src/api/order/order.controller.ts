@@ -1,9 +1,9 @@
 import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Req, Post } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { JwtAuthGuard } from 'src/share/auth/guards/jwt.guard';
+import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { RoleGuard } from 'src/share/auth/guards/role.guard';
-import { Roles } from 'src/share/auth/decorator/role.decorator';
+import { RoleGuard } from '../../share/auth/guards/role.guard';
+import { Roles } from '../../share/auth/decorator/role.decorator';
 import { Role } from '../user/role.enum';
 
 @UseGuards(JwtAuthGuard, RoleGuard)

@@ -7,7 +7,7 @@ import {
   ApiNotFoundResponse,
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/api/user/dto/create-user.dto';
+import { CreateUserDto } from '../../api/user/dto/create-user.dto';
 import { AUTH_SWAGGER_RESPONSE } from './auth.constant';
 import { AuthService } from './auth.service';
 import { LoginResponseDto } from './dto/login-response.dto';

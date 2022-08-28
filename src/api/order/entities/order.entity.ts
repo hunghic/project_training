@@ -1,6 +1,6 @@
-import { OrderDetailEntity } from 'src/api/order-detail/entities/order-detail.entity';
-import { UserEntity } from 'src/api/user/user.entity';
-import { VoucherEntity } from 'src/api/voucher/entities/voucher.entity';
+import { OrderDetailEntity } from '../../../api/order-detail/entities/order-detail.entity';
+import { UserEntity } from '../../../api/user/user.entity';
+import { VoucherEntity } from '../../../api/voucher/entities/voucher.entity';
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ORDER_CONST } from '../order.constant';
 

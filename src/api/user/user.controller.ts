@@ -14,7 +14,7 @@ import {
   // UseInterceptors,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/share/auth/guards/jwt.guard';
+import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
 import { SWAGGER_RESPONSE } from '../entity/entity.constant';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

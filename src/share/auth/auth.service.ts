@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Req } from '@nestjs/common';
-import { UserService } from 'src/api/user/user.service';
+import { UserService } from '../../api/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -7,8 +7,8 @@ import { JwtPayload } from './payloads/jwt-payload';
 import { JWT_CONFIG } from '../../configs/constant.config';
 import { ValidatorService } from './validators/check-expiration-time';
 import { ERROR } from '../common/error-code.const';
-import { CreateUserDto } from 'src/api/user/dto/create-user.dto';
-import { UserEntity } from 'src/api/user/user.entity';
+import { CreateUserDto } from '../../api/user/dto/create-user.dto';
+import { UserEntity } from '../../api/user/user.entity';
 import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()

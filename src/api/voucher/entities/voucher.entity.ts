@@ -1,4 +1,4 @@
-import { OrderEntity } from 'src/api/order/entities/order.entity';
+import { OrderEntity } from '../../../api/order/entities/order.entity';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { VOUCHER_CONST } from '../voucher.constant';
 

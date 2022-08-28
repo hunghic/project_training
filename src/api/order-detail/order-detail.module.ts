@@ -1,6 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-import { DatabaseModule } from 'src/configs/database/database.module';
+import { DatabaseModule } from '../../configs/database/database.module';
 import { OrderModule } from '../order/order.module';
 import { ProductModule } from '../product/product.module';
 import { OrderDetailController } from './order-detail.controller';
