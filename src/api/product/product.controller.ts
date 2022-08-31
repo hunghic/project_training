@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -17,16 +18,19 @@ import { ProductEntity } from './entities/product.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
+import { RoleGuard } from '../../share/auth/guards/role.guard';
+import { Roles } from '../../share/auth/decorator/role.decorator';
+import { Role } from '../user/role.enum';
 
 @Controller('product')
-// @UseGuards(JwtAuthGuard, RoleGuard)
 // @Roles(Role.ADMIN)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
   // @Interval(3000)
   @Get()
-  findAllPage(@Query('perPage') perPage = 5, @Query('pageNumber') pageNumber = 1) {
-    return this.productService.findAllPage(+perPage, +pageNumber);
+  findAllPage(@Query('perPage') perPage = 5, @Query('pageNumber') pageNumber = 1, @Query('sort') sort = 'ASC') {
+    return this.productService.findAllPage(+perPage, +pageNumber, sort);
   }
   // @Get()
   // findAll() {
@@ -35,19 +39,21 @@ export class ProductController {
 
   @Get('id/:id')
   findOne(@Param('id') id: string) {
-    return this.productService.getDiscount(+id);
+    return this.productService.findOne(+id);
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
   @Patch('add-flashsale/:id')
   addFlashsale(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Promise<ProductEntity> {
     return this.productService.addFlashsale(id, updateProductDto);
   }
-
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Promise<ProductEntity> {
     return this.productService.update(id, updateProductDto);
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);
@@ -56,7 +62,8 @@ export class ProductController {
   listSearch(@Query() query: any) {
     return this.productService.productSearch(query);
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
   @Post('create')
   @UseInterceptors(
     FileInterceptor('file', {

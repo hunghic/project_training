@@ -12,13 +12,6 @@ import { v4 as uuid } from 'uuid';
 export class UserService {
   constructor(private readonly userRepository: UserRepository, private mailService: MailerService) {}
 
-  async getByUserId(id: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneByCondition({ id });
-    if (!user) {
-      throw new NotFoundException(ERROR.USER_NOT_FOUND.MESSAGE);
-    }
-    return user;
-  }
   async getUserByEmail(email: string): Promise<UserEntity> {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
@@ -27,16 +20,18 @@ export class UserService {
     return user[0];
   }
   async findAllPage(perPage: number, pageNumber: number) {
-    return this.userRepository.getAllPage(perPage, pageNumber);
+    return this.userRepository.getAllPageUser(perPage, pageNumber);
   }
-  async updateByUserId(userId: string, updateUserDto: UpdateUserDto) {
+  async updateByUserId(userId: number, updateUserDto: UpdateUserDto) {
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(updateUserDto.password, salt);
     const userFound = await this.userRepository.findOneByCondition(userId);
     if (!userFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
-    await this.userRepository.update(userFound.id, updateUserDto);
+    const userWasUpdated = await this.userRepository.update(userFound.id, { ...updateUserDto, password: hashPassword });
 
-    return this.userRepository.findOneByCondition({ id: userFound.id });
+    return userWasUpdated;
   }
 
   async createUser(data: CreateUserDto): Promise<UserEntity> {
@@ -44,33 +39,40 @@ export class UserService {
     const hashPassword = await bcrypt.hash(data.password, salt);
     const code = uuid();
     const expriseIn = Date.now() + 3600; //1h'
-    const newUser = this.userRepository.save({
+    const createUser = this.userRepository.create({
       ...data,
       password: hashPassword,
       code: code,
       expriseIn: String(expriseIn),
     });
-    if (!newUser) {
+    if (!createUser) {
       throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
     }
+    const newUser = await this.userRepository.save({
+      ...data,
+      password: hashPassword,
+      code: code,
+      expriseIn: String(expriseIn),
+    });
     return newUser;
   }
 
   async getAllUser(): Promise<UserEntity> {
     return this.userRepository.getAll();
   }
-  async getOneUser(id: string) {
+  async getOneUser(id: number) {
     const userFound = await this.userRepository.findOneByCondition(id);
     if (!userFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
-    return this.userRepository.findOneByCondition(id);
+    return userFound;
   }
-  async deleteUser(id: string) {
-    const userFound = await this.userRepository.delete(id);
+  async deleteUser(id: number) {
+    const userFound = await this.userRepository.findOneByCondition(id);
     if (!userFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
+    await this.userRepository.delete(id);
     return 'Success!';
   }
   async listSearch(name: string) {

@@ -29,8 +29,8 @@ export class ProductService {
   async findAll(): Promise<ProductEntity> {
     return this.productRepository.getAll();
   }
-  async findAllPage(perPage: number, pageNumber: number) {
-    return this.productRepository.getAllPage(perPage, pageNumber);
+  async findAllPage(perPage: number, pageNumber: number, sort: string) {
+    return this.productRepository.getAllPage(perPage, pageNumber, sort);
   }
 
   async findOne(id: number) {

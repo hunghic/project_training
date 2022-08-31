@@ -38,7 +38,13 @@ export class FlashsaleDetailService {
     }
     return (await flashsaleFound).discount;
   }
-
+  async getOne(id: any) {
+    const flashsaleFound = await this.flashsaleDetailRepository.findOneByCondition(id);
+    if (!flashsaleFound) {
+      throw new BadRequestException(ERROR.NOTFOUND.MESSAGE);
+    }
+    return flashsaleFound;
+  }
   async findAll() {
     return this.flashsaleDetailRepository.getAll();
     // const discount = a.map((od: any) => od.discount);

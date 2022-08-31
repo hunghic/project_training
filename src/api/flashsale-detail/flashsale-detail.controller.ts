@@ -19,7 +19,7 @@ export class FlashsaleDetailController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.flashsaleDetailService.getFlashsale(+id);
+    return this.flashsaleDetailService.getOne(+id);
   }
 
   @Patch(':id')

@@ -24,7 +24,6 @@ export class AuthController {
   @ApiBadRequestResponse(AUTH_SWAGGER_RESPONSE.BAD_REQUEST_EXCEPTION)
   @ApiNotFoundResponse(AUTH_SWAGGER_RESPONSE.LOGIN_FAIL)
   @ApiInternalServerErrorResponse(AUTH_SWAGGER_RESPONSE.INTERNAL_SERVER_EXCEPTION)
-  // @UseGuards(JwtAuthGuard)
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
@@ -33,7 +32,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('getUser/:id')
   getOne(@Param('id') id: string) {
-    return this.authService.getOneUser(id);
+    return this.authService.getOneUser(+id);
   }
 
   @Post('register')
@@ -47,6 +46,7 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   async googleAuth(@Req() req) {}
 
   @Get('google/callback')

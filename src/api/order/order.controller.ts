@@ -20,7 +20,6 @@ export class OrderController {
   findAll() {
     return this.orderService.findAll();
   }
-  @Roles(Role.ADMIN, Role.USER)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(+id);

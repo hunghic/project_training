@@ -1,4 +1,3 @@
-import { find } from 'rxjs';
 import { BaseEntity, DeepPartial, Like, Repository } from 'typeorm';
 
 export class TypeOrmRepository<T extends BaseEntity> {
@@ -30,10 +29,21 @@ export class TypeOrmRepository<T extends BaseEntity> {
       
     })
   }
-  public async getAllPage(perPage, pageNumber): Promise<any> {
+  public async getAllPageUser(perPage, pageNumber): Promise<any> {
+    
     return this.repository.find({
       take: perPage,
-      skip: (pageNumber-1)*perPage,
+      skip: (pageNumber-1)*perPage,      
+    })
+  }
+  public async getAllPage(perPage, pageNumber, sort): Promise<any> {
+    const sortCondition: any = {
+      price: sort,
+    }
+    return this.repository.find({
+      order: sortCondition,
+      take: perPage,
+      skip: (pageNumber-1)*perPage, 
     })
   }
   async listSearch(conditions: any): Promise<T[]> {

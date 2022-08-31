@@ -1,12 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Roles } from '../../share/auth/decorator/role.decorator';
+import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
+import { RoleGuard } from '../../share/auth/guards/role.guard';
+import { Role } from '../user/role.enum';
 import { BrandService } from './brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 
 @Controller('brand')
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN)
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
-
   @Post()
   create(@Body() createBrandDto: CreateBrandDto) {
     return this.brandService.create(createBrandDto);
