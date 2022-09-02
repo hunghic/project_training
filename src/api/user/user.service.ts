@@ -35,19 +35,20 @@ export class UserService {
   }
 
   async createUser(data: CreateUserDto): Promise<UserEntity> {
+    const checkEmail = data.email;
+    if (!checkEmail) {
+      throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
+    }
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(data.password, salt);
     const code = uuid();
     const expriseIn = Date.now() + 3600; //1h'
-    const createUser = this.userRepository.create({
+    this.userRepository.create({
       ...data,
       password: hashPassword,
       code: code,
       expriseIn: String(expriseIn),
     });
-    if (!createUser) {
-      throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
-    }
     const newUser = await this.userRepository.save({
       ...data,
       password: hashPassword,

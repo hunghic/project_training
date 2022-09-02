@@ -1,9 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { FlashsaleDetailService } from './flashsale-detail.service';
 import { CreateFlashsaleDetailDto } from './dto/create-flashsale-detail.dto';
 import { UpdateFlashsaleDetailDto } from './dto/update-flashsale-detail.dto';
+import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
+import { RoleGuard } from '../../share/auth/guards/role.guard';
+import { Roles } from '../../share/auth/decorator/role.decorator';
+import { Role } from '../user/role.enum';
 
 @Controller('flashsale-detail')
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN)
 export class FlashsaleDetailController {
   constructor(private readonly flashsaleDetailService: FlashsaleDetailService) {}
 

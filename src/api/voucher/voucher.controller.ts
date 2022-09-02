@@ -1,9 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { VoucherService } from './voucher.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
+import { RoleGuard } from '../../share/auth/guards/role.guard';
+import { Roles } from '../../share/auth/decorator/role.decorator';
+import { Role } from '../user/role.enum';
 
 @Controller('voucher')
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN)
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
