@@ -71,7 +71,9 @@ describe('UserService', () => {
   describe('createUser', () => {
     // create
     it('should create a new User and return it', async () => {
-      expect(await service.createUser({ name: 'Hung', email: 'Hungboxi@gmail.com', password: '123456' })).toEqual({
+      expect(
+        await service.createUser({ name: 'Hung', email: 'Hungboxi@gmail.com', password: '123456', isVerified: true }),
+      ).toEqual({
         id: expect.any(Number),
         code: expect.any(String),
         expriseIn: expect.any(String),
@@ -85,7 +87,7 @@ describe('UserService', () => {
     it('should throw an exception when User existed', async () => {
       mockUserRepository.create.mockImplementation(() => false);
       expect(
-        service.createUser({ name: 'Hung', email: 'Hungboxi@gmail.com', password: '123456' }),
+        service.createUser({ name: 'Hung', email: 'Hungboxi@gmail.com', password: '123456', isVerified: true }),
       ).rejects.toThrowError(BadRequestException);
     });
   });

@@ -60,12 +60,12 @@ export class OrderDetailService {
 
   async remove(id: number) {
     const orderDetailFound = await this.orderDetailRepository.findOneByCondition(id);
+    if (!orderDetailFound) {
+      throw new BadRequestException('Not found');
+    }
     const orderId = orderDetailFound.order.id;
     await this.orderDetailRepository.delete(id);
     await this.orderService.update(orderId, UpdateOrderDto);
-    if (!orderDetailFound) {
-      return 'Not Found';
-    }
     return 'Success';
   }
 }

@@ -23,8 +23,8 @@ export default function (app: INestApplication) {
 
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('BLUEONION')
-      .setDescription('APIs documents for BLUEONION')
+      .setTitle('Hưng đẹp trai Shop')
+      .setDescription('APIs documents for Hưng đẹp trai Shop')
       .setVersion('1.0')
       .addBearerAuth()
       .build();

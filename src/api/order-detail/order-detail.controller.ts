@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 import { UpdateOrderDetailDto } from './dto/update-order-detail.dto';
@@ -33,6 +33,7 @@ export class OrderDetailController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.BAD_REQUEST)
   remove(@Param('id') id: string) {
     return this.orderDetailService.remove(+id);
   }
