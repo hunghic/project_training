@@ -20,9 +20,12 @@ export class TypeOrmRepository<T extends BaseEntity> {
   delete(data: any): Promise<any> {
     return this.repository.delete(data);
   }
-
+  
   async findOneByCondition(conditions: any): Promise<T> {
     return this.repository.findOne(conditions);
+  }
+  async searchOneOrderDetail(conditions: any): Promise<T> {
+      return this.repository.findOne({where: {product: conditions.product,order: conditions.order}}); 
   }
   public async getAll(): Promise<any> {
     return this.repository.find({
@@ -49,6 +52,7 @@ export class TypeOrmRepository<T extends BaseEntity> {
   async listSearch(conditions: any): Promise<T[]> {
      return this.repository.find({where: {name: Like(`%${conditions.name}%`)}}); 
     }
+
   async productSearch(conditions: any): Promise<T[]> {
     return this.repository.find({where: {
       name: Like(`%${conditions.name}%`),

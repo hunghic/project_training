@@ -6,7 +6,7 @@ import { RoleGuard } from '../../share/auth/guards/role.guard';
 import { Roles } from '../../share/auth/decorator/role.decorator';
 import { Role } from '../user/role.enum';
 
-@UseGuards(JwtAuthGuard, RoleGuard)
+// @UseGuards(JwtAuthGuard, RoleGuard)
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
@@ -32,7 +32,7 @@ export class OrderController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() body: any) {
-    return this.orderService.update(+id, body);
+    return this.orderService.updateVoucher(+id, body);
   }
   @Roles(Role.USER, Role.ADMIN)
   @Delete(':id')

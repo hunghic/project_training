@@ -15,7 +15,7 @@ export class OrderDetailEntity extends BaseEntity {
   quantity: number;
 
   @ManyToOne(() => OrderEntity, (order) => order.orderDetails, { onDelete: 'CASCADE', eager: true })
-  order: OrderEntity;
+  order: number;
 
   @ManyToOne(() => ProductEntity, (product) => product.orderDetails, {})
   product: number;

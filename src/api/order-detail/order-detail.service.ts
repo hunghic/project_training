@@ -3,6 +3,7 @@ import { ERROR } from '../../share/common/error-code.const';
 import { UpdateOrderDto } from '../order/dto/update-order.dto';
 import { OrderService } from '../order/order.service';
 import { ProductService } from '../product/product.service';
+import { VoucherService } from '../voucher/voucher.service';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 import { UpdateOrderDetailDto } from './dto/update-order-detail.dto';
 import { OrderDetailRepository } from './order-detail.repository';
@@ -14,24 +15,35 @@ export class OrderDetailService {
     private readonly productService: ProductService,
     @Inject(forwardRef(() => OrderService))
     private readonly orderService: OrderService,
+    private readonly voucherService: VoucherService,
   ) {}
 
   async create(createOrderDetailDto: CreateOrderDetailDto) {
+    const orderDetail = await this.orderDetailRepository.searchOneOrderDetail(createOrderDetailDto);
     const newOrderDetail = this.orderDetailRepository.create(createOrderDetailDto);
-    const priceProduct = this.productService.getPrice(newOrderDetail.product);
-    const idOrder = newOrderDetail.order;
+    const priceProduct = await this.productService.getPrice(newOrderDetail.product);
     const quantity = newOrderDetail.quantity;
-    const price = (await priceProduct) * quantity;
-    const createOrderDetail = await this.orderDetailRepository.save({ ...newOrderDetail, price: price });
-    await this.orderService.update(idOrder, UpdateOrderDto);
-    if (!newOrderDetail) {
-      throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
+    const price = priceProduct * quantity;
+    const idOrder = newOrderDetail.order;
+    if (orderDetail) {
+      const idOrderDetail = (await this.orderDetailRepository.searchOneOrderDetail(createOrderDetailDto)).id;
+      const newQuantity = (await this.orderDetailRepository.searchOneOrderDetail(createOrderDetailDto)).quantity;
+      const newPrice = (await this.orderDetailRepository.searchOneOrderDetail(createOrderDetailDto)).price;
+      await this.update(idOrderDetail, {
+        ...UpdateOrderDetailDto,
+        quantity: quantity + newQuantity,
+        price: price + newPrice,
+      });
+      await this.orderService.updateVoucher(idOrder, { ...UpdateOrderDto });
+      return this.findOne(idOrderDetail);
     }
+    const createOrderDetail = await this.orderDetailRepository.save({ ...newOrderDetail, price: price });
+    await this.orderService.updateVoucher(idOrder, { ...UpdateOrderDto });
     return createOrderDetail;
   }
 
   findAll() {
-    return `This action returns all orderDetail`;
+    return this.orderDetailRepository.getAll();
   }
   async orderDetailSearchPrice(conditions: unknown) {
     const list = await this.orderDetailRepository.searchOrderDetail(conditions);
@@ -50,12 +62,22 @@ export class OrderDetailService {
     return (await this.orderDetailRepository.findOneByCondition(id)).price;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} orderDetail`;
+  async findOne(id: number) {
+    const productFound = await this.orderDetailRepository.findOneByCondition(id);
+    if (!productFound) {
+      throw new BadRequestException(ERROR.NOTFOUND.MESSAGE);
+    }
+    return this.orderDetailRepository.findOneByCondition(id);
   }
 
-  update(id: number, updateOrderDetailDto: UpdateOrderDetailDto) {
-    return `This action updates a #${id} orderDetail`;
+  async update(id: number, updateOrderDetailDto: UpdateOrderDetailDto) {
+    const orderDetailFound = await this.orderDetailRepository.findOneByCondition(id);
+    if (!orderDetailFound) {
+      throw new BadRequestException(ERROR.NOTFOUND.MESSAGE);
+    }
+    const updateOrderDetail = await this.orderDetailRepository.update(id, updateOrderDetailDto);
+
+    return updateOrderDetail;
   }
 
   async remove(id: number) {
@@ -63,9 +85,9 @@ export class OrderDetailService {
     if (!orderDetailFound) {
       throw new BadRequestException('Not found');
     }
-    const orderId = orderDetailFound.order.id;
+    const orderId = orderDetailFound.order;
     await this.orderDetailRepository.delete(id);
-    await this.orderService.update(orderId, UpdateOrderDto);
+    await this.orderService.updateVoucher(orderId, UpdateOrderDto);
     return 'Success';
   }
 }

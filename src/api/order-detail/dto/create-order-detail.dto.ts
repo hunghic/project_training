@@ -6,4 +6,12 @@ export class CreateOrderDetailDto {
   @IsNotEmpty()
   @IsNumber()
   quantity: number;
+
+  price: number;
+
+  @IsNumber()
+  product: number;
+
+  @IsNumber()
+  order: number;
 }

@@ -53,16 +53,18 @@ export class OrderService {
     return this.orderRepository.findOneByCondition(id);
   }
 
-  async update(id: any, body: any) {
+  async updateVoucher(id: any, body: UpdateVoucherDto) {
     const orderFound = await this.orderRepository.findOneByCondition(id);
-
-    let pay = await this.orderDetailService.orderDetailSearchPrice({ order: id });
-    const discount = await this.voucherService.getDiscount(body.voucher);
-
-    if (body.voucher !== null) pay = pay - (pay * discount) / 100;
-
     if (!orderFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    let pay = await this.orderDetailService.orderDetailSearchPrice({ order: id });
+    const discount = await this.voucherService.getDiscount(orderFound.voucher);
+    if (orderFound.voucher !== null) {
+      pay = pay - (pay * discount) / 100;
+      await this.orderRepository.update(orderFound.id, { ...body, pay });
+
+      return this.orderRepository.findOneByCondition({ id: orderFound.id });
     }
 
     await this.orderRepository.update(orderFound.id, { ...body, pay });

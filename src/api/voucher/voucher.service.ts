@@ -31,7 +31,7 @@ export class VoucherService {
   async getDiscount(id: unknown) {
     const discountFound = await this.voucherRepository.findOneByCondition(id);
     if (!discountFound) {
-      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+      return null;
     }
     return (await this.voucherRepository.findOneByCondition(id)).discount;
   }
