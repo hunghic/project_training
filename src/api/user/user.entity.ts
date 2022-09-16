@@ -36,6 +36,9 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: OrderEntity[];
 
+  @OneToMany(() => OrderEntity, (orderDetail) => orderDetail.user)
+  voucherDetails: OrderEntity[];
+
   @ManyToOne(() => FlashsaleDetailEntity, (flashsaleDetail) => flashsaleDetail.users)
   flashsaleDetail: FlashsaleDetailEntity;
 }

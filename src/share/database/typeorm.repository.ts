@@ -24,14 +24,17 @@ export class TypeOrmRepository<T extends BaseEntity> {
   async findOneByCondition(conditions: any): Promise<T> {
     return this.repository.findOne(conditions);
   }
+  async findByCondition(conditions: any): Promise<T[]> {
+    return this.repository.find({where: {user: conditions}});
+  }
   async searchOneOrderDetail(conditions: any): Promise<T> {
       return this.repository.findOne({where: {product: conditions.product,order: conditions.order}}); 
   }
   public async getAll(): Promise<any> {
     return this.repository.find({
-      
     })
   }
+
   public async getAllPageUser(perPage, pageNumber): Promise<any> {
     
     return this.repository.find({

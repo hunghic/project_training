@@ -1,0 +1,4 @@
+export const VOUCHERDETAIL_CONST = {
+  MODEL_NAME: 'voucher-detail',
+  MODEL_PROVIDER: 'VOUCHERDETAIL_MODEL',
+};

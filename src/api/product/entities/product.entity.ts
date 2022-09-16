@@ -3,8 +3,9 @@ import { CategoryEntity } from '../../../api/category/entities/category.entity';
 import { FlashsaleDetailEntity } from '../../../api/flashsale-detail/entities/flashsale-detail.entity';
 import { OrderDetailEntity } from '../../../api/order-detail/entities/order-detail.entity';
 import { OrderEntity } from '../../../api/order/entities/order.entity';
-import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { PRODUCT_CONST } from '../product.constant';
+import { BaseEntity } from '../../../share/database/BaseEntity';
 
 @Entity({ name: PRODUCT_CONST.MODEL_NAME })
 export class ProductEntity extends BaseEntity {

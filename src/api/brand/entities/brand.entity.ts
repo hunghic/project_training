@@ -1,6 +1,7 @@
 import { ProductEntity } from '../../../api/product/entities/product.entity';
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BRAND_CONST } from '../brand.constant';
+import { BaseEntity } from '../../../share/database/BaseEntity';
 
 @Entity({ name: BRAND_CONST.MODEL_NAME })
 export class BrandEntity extends BaseEntity {

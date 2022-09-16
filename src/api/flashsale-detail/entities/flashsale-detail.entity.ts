@@ -1,8 +1,9 @@
 import { OrderEntity } from '../../../api/order/entities/order.entity';
 import { ProductEntity } from '../../../api/product/entities/product.entity';
 import { UserEntity } from '../../../api/user/user.entity';
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { FLASHSALEDETAIL_CONST } from '../flashsale-detail.constant';
+import { BaseEntity } from '../../../share/database/BaseEntity';
 
 @Entity({ name: FLASHSALEDETAIL_CONST.MODEL_NAME })
 export class FlashsaleDetailEntity extends BaseEntity {
