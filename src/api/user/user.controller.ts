@@ -17,12 +17,13 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../share/auth/decorator/role.decorator';
 import { RoleGuard } from '../..//share/auth/guards/role.guard';
 import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
-import { SWAGGER_RESPONSE } from '../entity/entity.constant';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Role } from './role.enum';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
+import { SWAGGER_RESPONSE } from './user.constant';
+
 @ApiTags('User')
 @Controller('user')
 @UseGuards(JwtAuthGuard, RoleGuard)

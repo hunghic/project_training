@@ -1,6 +1,5 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { EntityModule } from './api/entity/entity.module';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './share/auth/auth.module';
 import { LoggerMiddleware } from './share/middlewares/logger.middleware';
@@ -17,7 +16,6 @@ import { VoucherDetailModule } from './api/voucher-detail/voucher-detail.module'
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    EntityModule,
     UserModule,
     AuthModule,
     ProductModule,

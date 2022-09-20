@@ -1,4 +1,3 @@
-import { Exclude } from 'class-transformer';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { USER_CONST } from './user.constant';
 import { BaseEntity } from '../../share/database/BaseEntity';
@@ -17,7 +16,6 @@ export class UserEntity extends BaseEntity {
   @Column({ length: 255, unique: true })
   email: string;
 
-  @Exclude()
   @Column({ length: 255 })
   password: string;
 

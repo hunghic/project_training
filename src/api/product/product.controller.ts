@@ -22,7 +22,9 @@ import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
 import { RoleGuard } from '../../share/auth/guards/role.guard';
 import { Roles } from '../../share/auth/decorator/role.decorator';
 import { Role } from '../user/role.enum';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Product')
 @Controller('product')
 // @Roles(Role.ADMIN)
 export class ProductController {

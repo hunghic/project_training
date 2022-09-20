@@ -97,7 +97,7 @@ export class AuthService {
   async sendEmail(mail: string, code: string) {
     const response = await this.mailService.sendMail({
       to: mail,
-      from: 'hungboxi12223@gmail.com',
+      from: process.env.GG_USER,
       subject: 'Plain Text Email ✔',
       html: `<a href="http://localhost:8080/api/v1/auth/verify-email?code=${code}">Verify email</a>`,
     });

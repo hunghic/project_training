@@ -5,7 +5,9 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { RoleGuard } from '../../share/auth/guards/role.guard';
 import { Roles } from '../../share/auth/decorator/role.decorator';
 import { Role } from '../user/role.enum';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Order')
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Controller('order')
 export class OrderController {

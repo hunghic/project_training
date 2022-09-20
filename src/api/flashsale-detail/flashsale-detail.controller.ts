@@ -6,7 +6,9 @@ import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
 import { RoleGuard } from '../../share/auth/guards/role.guard';
 import { Roles } from '../../share/auth/decorator/role.decorator';
 import { Role } from '../user/role.enum';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Flashsale-detail')
 @Controller('flashsale-detail')
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.ADMIN)

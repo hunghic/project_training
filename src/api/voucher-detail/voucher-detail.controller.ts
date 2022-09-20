@@ -4,7 +4,9 @@ import { CreateVoucherDetailDto } from './dto/create-voucher-detail.dto';
 import { UpdateVoucherDetailDto } from './dto/update-voucher-detail.dto';
 import { JwtAuthGuard } from 'src/share/auth/guards/jwt.guard';
 import { RoleGuard } from 'src/share/auth/guards/role.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Voucher-detail')
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Controller('voucher-detail')
 export class VoucherDetailController {
