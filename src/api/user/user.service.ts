@@ -62,14 +62,19 @@ export class UserService {
     return this.userRepository.getAll();
   }
   async getOneUser(id: number) {
-    const userFound = await this.userRepository.findOneByCondition(id);
+    const userFound = await this.userRepository.findOneByCondition({
+      where: { id: id },
+      select: ['name', 'email', 'password', 'isVerified'],
+    });
     if (!userFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }
     return userFound;
   }
   async deleteUser(id: number) {
-    const userFound = await this.userRepository.findOneByCondition(id);
+    const userFound = await this.userRepository.findOneByCondition({
+      id,
+    });
     if (!userFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
     }

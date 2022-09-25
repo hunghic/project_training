@@ -75,12 +75,17 @@ export class OrderService {
   async remove(id: number) {
     const orderFound = await this.orderRepository.findOneByCondition(id);
     if (!orderFound) {
-      return 'Not Found';
+      throw new BadRequestException(ERROR.NOTFOUND.MESSAGE);
     }
     if (orderFound.isBuy === true) {
-      return 'Not delete order was active';
+      return {
+        statusCode: 400,
+        message: 'Not delete order was active',
+      };
     }
     await this.orderRepository.delete(id);
-    return 'Success';
+    return {
+      message: 'success',
+    };
   }
 }

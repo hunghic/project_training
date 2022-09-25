@@ -1,17 +1,30 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Req, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  Post,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { RoleGuard } from '../../share/auth/guards/role.guard';
 import { Roles } from '../../share/auth/decorator/role.decorator';
 import { Role } from '../user/role.enum';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Order')
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
+  @ApiBearerAuth()
   @Post()
   create(@Body() createOrderDto: CreateOrderDto, @Req() req: any) {
     const id = req.user.id;
@@ -36,6 +49,8 @@ export class OrderController {
   update(@Param('id') id: string, @Body() body: any) {
     return this.orderService.updateVoucher(+id, body);
   }
+
+  @HttpCode(HttpStatus.NOT_FOUND)
   @Roles(Role.USER, Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {

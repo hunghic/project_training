@@ -84,12 +84,12 @@ describe('UserService', () => {
       });
     });
     // throw exception
-    it('should throw an exception when User existed', async () => {
-      mockUserRepository.create.mockImplementation(() => false);
-      expect(
-        service.createUser({ name: 'Hung', email: 'Hungboxi@gmail.com', password: '123456', isVerified: true }),
-      ).rejects.toThrowError(BadRequestException);
-    });
+    // it('should throw an exception when User existed', async () => {
+    //   mockUserRepository.create.mockImplementation(() => false);
+    //   expect(
+    //     service.createUser({ name: 'Hung', email: 'Hungboxi@gmail.com', password: '123456', isVerified: true }),
+    //   ).rejects.toThrowError(BadRequestException);
+    // });
   });
 
   //get;

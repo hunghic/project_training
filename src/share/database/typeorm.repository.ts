@@ -1,3 +1,4 @@
+import { Tracing } from 'trace_events';
 import { BaseEntity, DeepPartial, Like, Repository } from 'typeorm';
 
 export class TypeOrmRepository<T extends BaseEntity> {
@@ -56,13 +57,47 @@ export class TypeOrmRepository<T extends BaseEntity> {
      return this.repository.find({where: {name: Like(`%${conditions.name}%`)}}); 
     }
 
-  async productSearch(conditions: any): Promise<T[]> {
-    return this.repository.find({where: {
-      name: Like(`%${conditions.name}%`),
-      brand: Like(`%${conditions.brand}%`),
-      category: Like(`%${conditions.category}%`)
-    }}); 
-   }
+  async productSearch(name: string, brand: number, category: number) {
+    if(!name  && brand  && category){ 
+      return  this.repository.find({
+        where: {
+          brand: Like(`%${brand}%`),
+          category: Like(`%${category}%`)
+        }
+      })
+    }
+    if(name && !brand && category){ 
+      return this.repository.find({
+        where: {
+          name: Like(`%${name}%`),
+          category: Like(`%${category}%`)
+        }
+      })
+    }
+    if(name && brand && !category ){ 
+      return this.repository.find({
+        where: {
+          name: Like(`%${name}%`),
+          brand: Like(`%${brand}%`),
+        }
+      })
+    }
+    if(name && brand && category ){ 
+      return this.repository.find({
+        where: {
+          name: Like(`%${name}%`),
+          brand: Like(`%${brand}%`),
+          category: Like(`%${category}%`)
+        }
+       })
+    }
+    
+    return this.repository.find({where: [
+    {name: Like(`%${name}%`),},
+    {brand: Like(`%${brand}%`),},
+    {category: Like(`%${category}%`)}
+  ]}); 
+  }
    async productSearchByFlashsale(conditions: any): Promise<T[]> {
     return this.repository.find({where: {
       flashsaleDetail: Like(`%${conditions.flashsaleDetail}%`),

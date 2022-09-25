@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { CacheModule, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './share/auth/auth.module';
@@ -11,11 +11,12 @@ import { FeedbackModule } from './api/feedback/feedback.module';
 import { VoucherModule } from './api/voucher/voucher.module';
 import { OrderDetailModule } from './api/order-detail/order-detail.module';
 import { FlashsaleDetailModule } from './api/flashsale-detail/flashsale-detail.module';
-import { VoucherDetailModule } from './api/voucher-detail/voucher-detail.module';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    CacheModule.register({ store: redisStore }),
     UserModule,
     AuthModule,
     ProductModule,
@@ -26,7 +27,6 @@ import { VoucherDetailModule } from './api/voucher-detail/voucher-detail.module'
     VoucherModule,
     OrderDetailModule,
     FlashsaleDetailModule,
-    VoucherDetailModule,
   ],
 })
 export class AppModule {

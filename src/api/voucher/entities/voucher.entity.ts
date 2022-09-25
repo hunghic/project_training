@@ -1,7 +1,6 @@
 import { OrderEntity } from '../../../api/order/entities/order.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { VOUCHER_CONST } from '../voucher.constant';
-import { VoucherDetailEntity } from 'src/api/voucher-detail/entities/voucher-detail.entity';
 import { BaseEntity } from '../../../share/database/BaseEntity';
 
 @Entity({ name: VOUCHER_CONST.MODEL_NAME })
@@ -20,6 +19,4 @@ export class VoucherEntity extends BaseEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.voucher)
   orders: OrderEntity[];
-  @OneToMany(() => VoucherDetailEntity, (voucherDetails) => voucherDetails.voucher)
-  voucherDetails: VoucherDetailEntity[];
 }

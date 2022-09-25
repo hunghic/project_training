@@ -61,8 +61,8 @@ export class ProductController {
     return this.productService.remove(+id);
   }
   @Get('search')
-  listSearch(@Query() query: any) {
-    return this.productService.productSearch(query);
+  listSearch(@Query('name') name: string, @Query('category') category: number, @Query('brand') brand: number) {
+    return this.productService.productSearch(name, +category, +brand);
   }
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(Role.ADMIN)

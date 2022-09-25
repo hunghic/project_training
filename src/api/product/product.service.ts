@@ -99,8 +99,8 @@ export class ProductService {
     await this.productRepository.delete(id);
     return 'Success!';
   }
-  async productSearch(conditions: unknown) {
-    return this.productRepository.productSearch(conditions);
+  async productSearch(name: string, category: number, brand: number) {
+    return this.productRepository.productSearch(name, category, brand);
   }
   async productSearchByFlashsaleDetail(conditions: unknown) {
     return this.productRepository.productSearchByFlashsale(conditions);

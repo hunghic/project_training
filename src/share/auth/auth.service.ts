@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Req } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
 import { UserService } from '../../api/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
@@ -10,6 +10,8 @@ import { ERROR } from '../common/error-code.const';
 import { CreateUserDto } from '../../api/user/dto/create-user.dto';
 import { UserEntity } from '../../api/user/user.entity';
 import { MailerService } from '@nestjs-modules/mailer';
+import { UserRepository } from 'src/api/user/user.repository';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly validatorService: ValidatorService,
     private mailService: MailerService,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async login(loginDto: LoginDto): Promise<any> {
@@ -29,7 +32,6 @@ export class AuthService {
       id: user.id,
       email: user.email,
       role: user.role,
-      name: user.name,
     };
     const jwtExpiresIn = parseInt(JWT_CONFIG.expiresIn);
     if (user.isVerified === false) {
@@ -66,7 +68,6 @@ export class AuthService {
       id: newUser.id,
       email: newUser.email,
       role: newUser.role,
-      name: newUser.name,
     };
     const jwtExpiresIn = parseInt(JWT_CONFIG.expiresIn);
     return {
@@ -94,7 +95,25 @@ export class AuthService {
       return { message: 'Verified error' };
     }
   }
-  async sendEmail(mail: string, code: string) {
+
+  async resetPassword(@Req() req: any): Promise<any> {
+    const user = await this.userService.verifyEmail(req);
+    if (!user) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    const passwordToUser = user.code;
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(passwordToUser, salt);
+    user.password = hashPassword;
+    user.code = null;
+    user.timeResetPwd = 0;
+    await user.save();
+
+    return {
+      password: passwordToUser,
+    };
+  }
+  async sendEmails(mail: string, code: string) {
     const response = await this.mailService.sendMail({
       to: mail,
       from: process.env.GG_USER,
@@ -102,5 +121,47 @@ export class AuthService {
       html: `<a href="http://localhost:8080/api/v1/auth/verify-email?code=${code}">Verify email</a>`,
     });
     return response;
+  }
+
+  async sendEmailss(mail: string, code: string) {
+    const response = await this.mailService.sendMail({
+      to: mail,
+      from: process.env.GG_USER,
+      subject: 'Plain Text Email ✔',
+      html: `<a href="http://localhost:8080/api/v1/auth/verify-emails?code=${code}">Verify email</a>`,
+    });
+    return response;
+  }
+  async forgotPassword(email: string) {
+    const user = await this.userRepository.findOneByCondition({ email: email });
+    if (!user) {
+      // throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+      throw new HttpException('Not found your email!', HttpStatus.NOT_FOUND);
+    }
+    const userId = user.id;
+    const userSpamCheck = user.timeResetPwd;
+    const code = uuid();
+    const date = new Date();
+    if (userSpamCheck + 1 > 5) {
+      {
+        if (Number(date) > Number(user.updatedAt) + 1000 * 60 * 60) {
+          const userSpamCheck = 0;
+          await this.userRepository.update(userId, { code: code, timeResetPwd: userSpamCheck + 1 });
+          await this.sendEmailss(email, code);
+          return {
+            message: 'Check your email',
+          };
+        }
+      }
+      throw new HttpException(
+        'Your get email for 5 time or more than, please check your email. We will send you a notification email in the next 1 hour',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    await this.userRepository.update(userId, { code: code, timeResetPwd: userSpamCheck + 1 });
+    await this.sendEmailss(email, code);
+    return {
+      message: 'Check your email',
+    };
   }
 }

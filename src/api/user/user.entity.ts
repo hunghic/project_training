@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { USER_CONST } from './user.constant';
 import { BaseEntity } from '../../share/database/BaseEntity';
 import { Role } from './role.enum';
@@ -11,6 +11,7 @@ export class UserEntity extends BaseEntity {
   id: number;
 
   @Column({ length: 255, default: null })
+  @Index('name')
   name: string;
 
   @Column({ length: 255, unique: true })
@@ -25,6 +26,9 @@ export class UserEntity extends BaseEntity {
   @Column({ length: 255, default: null })
   code: string;
 
+  @Column({ default: 0 })
+  timeResetPwd: number;
+
   @Column({ length: 255, default: null })
   expriseIn: string;
 
@@ -33,9 +37,6 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: OrderEntity[];
-
-  @OneToMany(() => OrderEntity, (orderDetail) => orderDetail.user)
-  voucherDetails: OrderEntity[];
 
   @ManyToOne(() => FlashsaleDetailEntity, (flashsaleDetail) => flashsaleDetail.users)
   flashsaleDetail: FlashsaleDetailEntity;

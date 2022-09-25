@@ -6,6 +6,7 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
   ApiInternalServerErrorResponse,
+  ApiConsumes,
 } from '@nestjs/swagger';
 import { CreateUserDto } from '../../api/user/dto/create-user.dto';
 import { AUTH_SWAGGER_RESPONSE } from './auth.constant';
@@ -14,6 +15,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { MailerService } from '@nestjs-modules/mailer';
+import { forgotPasswordDto } from './dto/forgot-password.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -24,6 +26,7 @@ export class AuthController {
   @ApiBadRequestResponse(AUTH_SWAGGER_RESPONSE.BAD_REQUEST_EXCEPTION)
   @ApiNotFoundResponse(AUTH_SWAGGER_RESPONSE.LOGIN_FAIL)
   @ApiInternalServerErrorResponse(AUTH_SWAGGER_RESPONSE.INTERNAL_SERVER_EXCEPTION)
+  @ApiConsumes('application/x-www-form-urlencoded')
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
@@ -38,7 +41,7 @@ export class AuthController {
   @Post('register')
   async register(@Body() user: CreateUserDto) {
     const userRegister = await this.authService.register(user);
-    await this.authService.sendEmail(userRegister.email, userRegister.code);
+    await this.authService.sendEmails(userRegister.email, userRegister.code);
     return {
       message: 'Register successfully',
     };
@@ -68,6 +71,10 @@ export class AuthController {
   async getVerify(@Query() code: string) {
     return this.authService.verifyEmail(code);
   }
+  @Get('verify-emails')
+  async getVerifyPassword(@Query() code: string) {
+    return this.authService.resetPassword(code);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
@@ -75,6 +82,12 @@ export class AuthController {
     return {
       req: request.user.id,
     };
+  }
+
+  @Get('forgot-password')
+  // @HttpCode(HttpStatus.BAD_REQUEST)
+  async forGotPassword(@Body() user: forgotPasswordDto) {
+    return this.authService.forgotPassword(user.email);
   }
 }
 // TODO

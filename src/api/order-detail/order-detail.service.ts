@@ -20,6 +20,9 @@ export class OrderDetailService {
 
   async create(createOrderDetailDto: CreateOrderDetailDto) {
     const orderDetail = await this.orderDetailRepository.searchOneOrderDetail(createOrderDetailDto);
+    if (!orderDetail) {
+      throw new BadRequestException(ERROR.NOTFOUND.MESSAGE);
+    }
     const newOrderDetail = this.orderDetailRepository.create(createOrderDetailDto);
     const priceProduct = await this.productService.getPrice(newOrderDetail.product);
     const quantity = newOrderDetail.quantity;

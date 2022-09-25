@@ -13,7 +13,7 @@ import {
   // UploadedFile,
   // UseInterceptors,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../share/auth/decorator/role.decorator';
 import { RoleGuard } from '../..//share/auth/guards/role.guard';
 import { JwtAuthGuard } from '../../share/auth/guards/jwt.guard';
@@ -61,6 +61,7 @@ export class UserController {
     return this.userService.deleteUser(+id);
   }
 
+  @ApiBearerAuth()
   @Get('/profile')
   profile(@Req() request) {
     return {
