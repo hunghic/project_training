@@ -11,7 +11,7 @@ export class DecodeTokenMiddleware implements NestMiddleware {
       const jwtService = new JwtService({
         secret: JWT_CONFIG.secret,
         signOptions: {
-          expiresIn: JWT_CONFIG.expiresIn,
+          expiresIn: JWT_CONFIG.accExpiresIn,
         },
       });
       request.user = jwtService.decode(token.substring(7)) as any;

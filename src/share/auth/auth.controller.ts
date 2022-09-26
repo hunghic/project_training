@@ -1,4 +1,17 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  CACHE_MANAGER,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Inject,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiOkResponse,
@@ -16,11 +29,16 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { MailerService } from '@nestjs-modules/mailer';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
+import { Cache } from 'cache-manager';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private mailService: MailerService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private mailService: MailerService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   @ApiOkResponse(AUTH_SWAGGER_RESPONSE.LOGIN_SUCCESS)
   @ApiBadRequestResponse(AUTH_SWAGGER_RESPONSE.BAD_REQUEST_EXCEPTION)
@@ -88,6 +106,11 @@ export class AuthController {
   // @HttpCode(HttpStatus.BAD_REQUEST)
   async forGotPassword(@Body() user: forgotPasswordDto) {
     return this.authService.forgotPassword(user.email);
+  }
+  @Post('redis')
+  async redisTest() {
+    await this.cacheManager.set('refreshToken', 'Value', { ttl: +process.env.REFRESH_TOKEN_EXPIRED_IN });
+    return ' cong';
   }
 }
 // TODO

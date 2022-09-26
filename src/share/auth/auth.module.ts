@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
@@ -12,6 +12,7 @@ import { JwtAuthGuard } from './guards/jwt.guard';
 import { RoleGuard } from './guards/role.guard';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { OrderModule } from '../../api/order/order.module';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -25,11 +26,12 @@ import { OrderModule } from '../../api/order/order.module';
         },
       },
     }),
+    CacheModule.register({ store: redisStore, host: 'localhost', port: 6379 }),
     PassportModule,
     JwtModule.register({
       secret: JWT_CONFIG.secret,
       signOptions: {
-        expiresIn: JWT_CONFIG.expiresIn,
+        expiresIn: JWT_CONFIG.accExpiresIn,
       },
     }),
     UserModule,

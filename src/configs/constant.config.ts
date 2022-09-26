@@ -3,7 +3,9 @@ config();
 
 export const JWT_CONFIG = {
   secret: process.env.TOKEN_SECRET,
-  expiresIn: process.env.TOKEN_EXPIRED_IN,
+  refSecret: process.env.REFRESH_SECRET,
+  accExpiresIn: process.env.TOKEN_EXPIRED_IN,
+  refExpiresIn: process.env.REFRESH_TOKEN_EXPIRED_IN,
 };
 
 export const MYSQL_CONFIG = {

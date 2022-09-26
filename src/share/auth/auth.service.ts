@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
+import { BadRequestException, CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable, Req } from '@nestjs/common';
 import { UserService } from '../../api/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
@@ -12,6 +12,7 @@ import { UserEntity } from '../../api/user/user.entity';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserRepository } from 'src/api/user/user.repository';
 import { v4 as uuid } from 'uuid';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,7 @@ export class AuthService {
     private readonly validatorService: ValidatorService,
     private mailService: MailerService,
     private readonly userRepository: UserRepository,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async login(loginDto: LoginDto): Promise<any> {
@@ -33,14 +35,26 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
-    const jwtExpiresIn = parseInt(JWT_CONFIG.expiresIn);
+    const accessExpiresIn = parseInt(JWT_CONFIG.accExpiresIn);
+    const refreshExpiresIn = parseInt(JWT_CONFIG.refExpiresIn);
     if (user.isVerified === false) {
       throw new BadRequestException(ERROR.USER_NOT_VERIFIED.MESSAGE);
     }
     if (user.isVerified === true) {
+      const accessToken = await this.jwtService.signAsync(payload, {
+        secret: JWT_CONFIG.secret,
+        expiresIn: accessExpiresIn,
+      });
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        secret: JWT_CONFIG.refSecret,
+        expiresIn: refreshExpiresIn,
+      });
+      await this.cacheManager.set('refreshToken:' + payload.id, refreshToken, {
+        ttl: +process.env.REFRESH_TOKEN_EXPIRED_IN,
+      });
       return {
-        accessToken: await this.jwtService.signAsync(payload, { secret: JWT_CONFIG.secret, expiresIn: jwtExpiresIn }),
-        accessTokenExpire: jwtExpiresIn,
+        accessToken,
+        refreshToken,
       };
     }
   }
@@ -69,7 +83,7 @@ export class AuthService {
       email: newUser.email,
       role: newUser.role,
     };
-    const jwtExpiresIn = parseInt(JWT_CONFIG.expiresIn);
+    const jwtExpiresIn = parseInt(JWT_CONFIG.accExpiresIn);
     return {
       accessToken: await this.jwtService.signAsync(payload, { secret: JWT_CONFIG.secret, expiresIn: jwtExpiresIn }),
       accessTokenExpire: jwtExpiresIn,
