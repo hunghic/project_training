@@ -1,4 +1,5 @@
-import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { healthcare } from 'googleapis/build/src/apis/healthcare';
 import { ERROR } from '../../share/common/error-code.const';
 import { UpdateOrderDto } from '../order/dto/update-order.dto';
 import { OrderService } from '../order/order.service';
@@ -20,14 +21,19 @@ export class OrderDetailService {
 
   async create(createOrderDetailDto: CreateOrderDetailDto) {
     const orderDetail = await this.orderDetailRepository.searchOneOrderDetail(createOrderDetailDto);
-    if (!orderDetail) {
-      throw new BadRequestException(ERROR.NOTFOUND.MESSAGE);
-    }
+    // console.log(orderDetail);
+    // if (!orderDetail) {
+    //   throw new BadRequestException(ERROR.NOTFOUND.MESSAGE);
+    // }
     const newOrderDetail = this.orderDetailRepository.create(createOrderDetailDto);
     const priceProduct = await this.productService.getPrice(newOrderDetail.product);
     const quantity = newOrderDetail.quantity;
     const price = priceProduct * quantity;
     const idOrder = newOrderDetail.order;
+    const checkOrder = await this.orderDetailRepository.findOneByCondition(idOrder);
+    if (!checkOrder) {
+      throw new NotFoundException(ERROR.NOTFOUND.MESSAGE);
+    }
     if (orderDetail) {
       const idOrderDetail = (await this.orderDetailRepository.searchOneOrderDetail(createOrderDetailDto)).id;
       const newQuantity = (await this.orderDetailRepository.searchOneOrderDetail(createOrderDetailDto)).quantity;

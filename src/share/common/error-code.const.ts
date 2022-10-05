@@ -42,14 +42,32 @@ export const ERROR = {
   // voucher
   VOUCHER_NOT_FOUND: {
     CODE: 'us00001',
-    MESSAGE: 'User not found, disabled or locked',
+    MESSAGE: 'Voucher not found, disabled or locked',
   },
   VOUCHER_EXISTED: {
     CODE: 'us00001',
-    MESSAGE: 'User not found, disabled or locked',
+    MESSAGE: 'Voucher existed, disabled or locked',
   },
   VOUCHER_EXPIRED: {
     CODE: 'us00001',
     MESSAGE: 'Voucher expired',
+  },
+  //refreshToken
+  EXPIRED: {
+    CODE: 'us00001',
+    MESSAGE: 'Refresh Token Expired or Invalid',
+  },
+  // Phone
+  PHONE_EXISTED: {
+    CODE: '00002',
+    MESSAGE: 'Please user another phone numbers',
+  },
+  VERIFY: {
+    CODE: '00002',
+    MESSAGE: 'Please verify your phone number first',
+  },
+  TWO_STEP_VERIFY: {
+    CODE: '00002',
+    MESSAGE: 'Please do 2 step verify',
   },
 };

@@ -18,12 +18,13 @@ import { RoleGuard } from '../../share/auth/guards/role.guard';
 import { Roles } from '../../share/auth/decorator/role.decorator';
 import { Role } from '../user/role.enum';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { GoogleApiService } from 'src/share/services/gg-api/gg-api.service';
 
 @ApiTags('Order')
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService, private googleApiService: GoogleApiService) {}
   @ApiBearerAuth()
   @Post()
   create(@Body() createOrderDto: CreateOrderDto, @Req() req: any) {
@@ -55,6 +56,14 @@ export class OrderController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);
+  }
+
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @Get('/report/toGoogleSheet')
+  public async getFormReportToSheet() {
+    const data = await this.orderService.exportOrder();
+    return this.googleApiService.createSpreadSheet(data);
   }
 
   // // @UseGuards(JwtAuthGuard)

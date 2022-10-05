@@ -30,6 +30,8 @@ import { JwtAuthGuard } from './guards/jwt.guard';
 import { MailerService } from '@nestjs-modules/mailer';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
 import { Cache } from 'cache-manager';
+import { GetNewTokenDto } from './dto/get-token.dto';
+import { Login2StepDto } from './dto/login-2-step.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -49,6 +51,16 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(loginDto);
+  }
+  @ApiOkResponse(AUTH_SWAGGER_RESPONSE.LOGIN_SUCCESS)
+  @ApiBadRequestResponse(AUTH_SWAGGER_RESPONSE.BAD_REQUEST_EXCEPTION)
+  @ApiNotFoundResponse(AUTH_SWAGGER_RESPONSE.LOGIN_FAIL)
+  @ApiInternalServerErrorResponse(AUTH_SWAGGER_RESPONSE.INTERNAL_SERVER_EXCEPTION)
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @Post('/login-2-step')
+  @HttpCode(HttpStatus.OK)
+  async login2Step(@Body() login2StepDto: Login2StepDto): Promise<LoginResponseDto> {
+    return this.authService.login2Step(login2StepDto);
   }
   @UseGuards(JwtAuthGuard)
   @Get('getUser/:id')
@@ -107,10 +119,13 @@ export class AuthController {
   async forGotPassword(@Body() user: forgotPasswordDto) {
     return this.authService.forgotPassword(user.email);
   }
-  @Post('redis')
-  async redisTest() {
-    await this.cacheManager.set('refreshToken', 'Value', { ttl: +process.env.REFRESH_TOKEN_EXPIRED_IN });
-    return ' cong';
+  // @Get('getRedis')
+  // async getRedis() {}
+  @UseGuards(JwtAuthGuard)
+  @Post('get-new-token')
+  async getNewAccessToken(@Req() req, @Body() refreshToken: GetNewTokenDto) {
+    const userId = req.user.id;
+    return this.authService.getAccessToken(userId, refreshToken);
   }
 }
 // TODO

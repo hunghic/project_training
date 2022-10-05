@@ -12,7 +12,7 @@ import { VoucherModule } from './api/voucher/voucher.module';
 import { OrderDetailModule } from './api/order-detail/order-detail.module';
 import { FlashsaleDetailModule } from './api/flashsale-detail/flashsale-detail.module';
 import * as redisStore from 'cache-manager-redis-store';
-
+import { SmsModule } from './share/services/sms/sms.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -27,6 +27,7 @@ import * as redisStore from 'cache-manager-redis-store';
     VoucherModule,
     OrderDetailModule,
     FlashsaleDetailModule,
+    SmsModule,
   ],
 })
 export class AppModule {

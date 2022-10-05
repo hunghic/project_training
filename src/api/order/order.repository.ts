@@ -12,4 +12,17 @@ export class OrderRepository extends TypeOrmRepository<OrderEntity> {
   ) {
     super(orderEntity);
   }
+  async searchOrderEx() {
+    const result = await this.repository.find({
+      loadRelationIds: true,
+      where: {
+        isBuy: true,
+      },
+      select: ['createdAt', 'updatedAt', 'id', 'pay', 'user', 'voucher'],
+    });
+    for (let i = 0; i < result.length; i++) {
+      delete result[i].orderDetails;
+    }
+    return result;
+  }
 }

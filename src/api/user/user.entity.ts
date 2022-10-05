@@ -21,6 +21,12 @@ export class UserEntity extends BaseEntity {
   password: string;
 
   @Column({ default: false })
+  isPhoneNumberConfirmed: boolean;
+
+  @Column({ default: null })
+  phoneNumber: string;
+
+  @Column({ default: false })
   isVerified: boolean;
 
   @Column({ length: 255, default: null })
@@ -31,6 +37,9 @@ export class UserEntity extends BaseEntity {
 
   @Column({ length: 255, default: null })
   expriseIn: string;
+
+  @Column({ default: false })
+  isActive2StepVerify: boolean;
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   role: Role;

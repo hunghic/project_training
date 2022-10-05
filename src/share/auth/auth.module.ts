@@ -13,6 +13,7 @@ import { RoleGuard } from './guards/role.guard';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { OrderModule } from '../../api/order/order.module';
 import * as redisStore from 'cache-manager-redis-store';
+import { SmsModule } from '../services/sms/sms.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
     CacheModule.register({ store: redisStore, host: 'localhost', port: 6379 }),
     PassportModule,
+    SmsModule,
     JwtModule.register({
       secret: JWT_CONFIG.secret,
       signOptions: {

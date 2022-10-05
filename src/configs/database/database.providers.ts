@@ -1,4 +1,3 @@
-// import { MYSQL_CONFIG } from '../constant.config';
 import { createConnection } from 'typeorm';
 import { MYSQL_CONFIG } from '../constant.config';
 

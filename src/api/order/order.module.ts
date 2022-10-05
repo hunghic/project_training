@@ -7,6 +7,7 @@ import { OrderRepository } from './order.repository';
 import { orderProvider } from './order.provider';
 import { OrderDetailModule } from '../order-detail/order-detail.module';
 import { VoucherModule } from '../voucher/voucher.module';
+import { GoogleApiModule } from 'src/share/services/gg-api/gg-api.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { VoucherModule } from '../voucher/voucher.module';
     MulterModule.register({ dest: './uploads' }),
     forwardRef(() => OrderDetailModule),
     forwardRef(() => VoucherModule),
+    GoogleApiModule,
   ],
   controllers: [OrderController],
   providers: [OrderService, OrderRepository, ...orderProvider],

@@ -88,4 +88,9 @@ export class OrderService {
       message: 'success',
     };
   }
+  async exportOrder() {
+    const order = await this.orderRepository.searchOrderEx();
+
+    return order;
+  }
 }

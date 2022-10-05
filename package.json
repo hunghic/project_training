@@ -23,6 +23,7 @@
     "test:e2e:watch": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@googleapis/docs": "^1.0.1",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.1.0",
@@ -54,6 +55,7 @@
     "moment-timezone": "^0.5.34",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
+    "node-otp": "^1.2.3",
     "nodemailer": "^6.7.8",
     "passport": "^0.5.3",
     "passport-google-oauth20": "^2.0.0",
@@ -62,6 +64,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^4.4.0",
+    "twilio": "^3.82.1",
     "typeorm": "^0.2.45",
     "uuid": "^8.3.2",
     "winston": "^3.7.2",

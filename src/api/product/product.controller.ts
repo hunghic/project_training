@@ -62,7 +62,7 @@ export class ProductController {
   }
   @Get('search')
   listSearch(@Query('name') name: string, @Query('category') category: number, @Query('brand') brand: number) {
-    return this.productService.productSearch(name, +category, +brand);
+    return this.productService.productSearch(name, category, brand);
   }
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(Role.ADMIN)

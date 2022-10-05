@@ -1,3 +1,4 @@
+import { userInfo } from 'os';
 import { Tracing } from 'trace_events';
 import { BaseEntity, DeepPartial, Like, Repository } from 'typeorm';
 
@@ -31,6 +32,7 @@ export class TypeOrmRepository<T extends BaseEntity> {
   async searchOneOrderDetail(conditions: any): Promise<T> {
       return this.repository.findOne({where: {product: conditions.product,order: conditions.order}}); 
   }
+  
   public async getAll(): Promise<any> {
     return this.repository.find({
     })
@@ -57,7 +59,7 @@ export class TypeOrmRepository<T extends BaseEntity> {
      return this.repository.find({where: {name: Like(`%${conditions.name}%`)}}); 
     }
 
-  async productSearch(name: string, brand: number, category: number) {
+  async productSearch(name: string, brand: number, category: number): Promise<T[]> {
     if(!name  && brand  && category){ 
       return  this.repository.find({
         where: {
@@ -91,7 +93,6 @@ export class TypeOrmRepository<T extends BaseEntity> {
         }
        })
     }
-    
     return this.repository.find({where: [
     {name: Like(`%${name}%`),},
     {brand: Like(`%${brand}%`),},

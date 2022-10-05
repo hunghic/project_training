@@ -1,4 +1,12 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  CACHE_MANAGER,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ERROR } from '../../share/common/error-code.const';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,10 +15,20 @@ import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { v4 as uuid } from 'uuid';
+import { UpdatePhoneDto } from './dto/update-phone.dto';
+import { hotp } from 'node-otp';
+import SmsService from 'src/share/services/sms/sms.service';
+import { Cache } from 'cache-manager';
+import { VerifyPhoneDto } from './dto/verify-otp.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository, private mailService: MailerService) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private mailService: MailerService,
+    private smsService: SmsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async getUserByEmail(email: string): Promise<UserEntity> {
     const user = await this.userRepository.getUserByEmail(email);
@@ -36,7 +54,8 @@ export class UserService {
 
   async createUser(data: CreateUserDto): Promise<UserEntity> {
     const checkEmail = data.email;
-    if (!checkEmail) {
+    const mail = await this.userRepository.findOneByCondition({ email: checkEmail });
+    if (mail) {
       throw new BadRequestException(ERROR.USER_EXISTED.MESSAGE);
     }
     const salt = await bcrypt.genSalt();
@@ -64,7 +83,7 @@ export class UserService {
   async getOneUser(id: number) {
     const userFound = await this.userRepository.findOneByCondition({
       where: { id: id },
-      select: ['name', 'email', 'password', 'isVerified'],
+      select: ['id', 'name', 'email', 'password', 'isVerified', 'role'],
     });
     if (!userFound) {
       throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
@@ -86,5 +105,61 @@ export class UserService {
   }
   async verifyEmail(code: string) {
     return this.userRepository.getUserByCode(code);
+  }
+  async updatePhoneNumber(id: number, phone: UpdatePhoneDto) {
+    const userFound = await this.userRepository.findOneByCondition(id);
+    if (!userFound) {
+      throw new BadRequestException(ERROR.USER_NOT_FOUND.MESSAGE);
+    }
+    userFound.phoneNumber = phone.phoneNumber;
+    userFound.isPhoneNumberConfirmed = true;
+    return userFound.save();
+  }
+  async sendSms(id: number, phone: UpdatePhoneDto) {
+    const { phoneNumber } = phone;
+    const userFound = await this.userRepository.findOneByCondition(id);
+    if (userFound.phoneNumber == phoneNumber) {
+      throw new BadRequestException(ERROR.PHONE_EXISTED.MESSAGE);
+    }
+    const otp = hotp({
+      secret: String(Math.random()),
+    });
+    const phoneKey = 'phoneKey:' + id;
+    const otpKey = 'otpKey:' + id;
+    await this.cacheManager.set(otpKey, otp, {
+      ttl: +process.env.OTP_EXPIRED_IN,
+    });
+    await this.cacheManager.set(phoneKey, phoneNumber, {
+      ttl: +process.env.PHONE_NUMBER_EXPIRED_IN,
+    });
+    // await this.smsService.initiatePhoneNumberVerification(phone.phoneNumber, otp);
+    return new HttpException('Check your phone', HttpStatus.OK);
+  }
+  async verifyOtp(id: number, otp: VerifyPhoneDto) {
+    const phoneKey = 'phoneKey:' + id;
+    const otpKey = 'otpKey:' + id;
+    const phone: string = await this.cacheManager.get(phoneKey);
+    const otp1 = await this.cacheManager.get(otpKey);
+    if (otp.otp !== otp1) {
+      return false;
+    }
+    const updateUser = await this.updatePhoneNumber(id, { ...UpdatePhoneDto, phoneNumber: phone });
+    await this.cacheManager.del(phoneKey);
+    await this.cacheManager.del(otpKey);
+    return updateUser;
+  }
+  async Active2StepVerify(id: number) {
+    const userFound = await this.userRepository.findOneByCondition(id);
+    if (userFound.isPhoneNumberConfirmed === false) {
+      throw new BadRequestException(ERROR.VERIFY.MESSAGE);
+    }
+    if (userFound.isActive2StepVerify === false) {
+      userFound.isActive2StepVerify = true;
+      return userFound.save();
+    }
+    if (userFound.isActive2StepVerify === true) {
+      userFound.isActive2StepVerify = false;
+      return userFound.save();
+    }
   }
 }

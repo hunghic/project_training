@@ -16,16 +16,12 @@ export class OrderEntity extends BaseEntity {
   @Column({ default: false })
   isBuy: boolean;
 
-  @ManyToOne(() => UserEntity, (user) => user.orders, {
-    eager: true,
-  })
+  @ManyToOne(() => UserEntity, (user) => user.orders, { eager: true })
   user: UserEntity;
 
   @OneToMany(() => OrderDetailEntity, (orderDetails) => orderDetails.order, { cascade: true })
   orderDetails: OrderDetailEntity[];
 
-  @ManyToOne(() => VoucherEntity, (voucher) => voucher.orders, {
-    eager: true,
-  })
+  @ManyToOne(() => VoucherEntity, (voucher) => voucher.orders, { eager: true })
   voucher: VoucherEntity;
 }
